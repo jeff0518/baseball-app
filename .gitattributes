@@ -1,0 +1,28 @@
+# Enforce LF line endings for common text files
+* text=auto
+
+# Force LF for markdown and json to avoid CRLF on Windows
+*.md text eol=lf
+*.markdown text eol=lf
+*.json text eol=lf
+
+# Source files
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+
+# Lock files / config
+package.json text eol=lf
+package-lock.json text eol=lf
+pnpm-lock.yaml text eol=lf
+
+# Binary files (do not normalize)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.jar binary
