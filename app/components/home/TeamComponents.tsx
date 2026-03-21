@@ -75,7 +75,8 @@ export function TeamBadge({
  * 连胜/连败标记 (W/L 标记法)
  */
 export function StreakBadge({ streak }: { streak: string }) {
-  const isWin = streak.includes('勝');
+  // Support both English (L1, W3) and Chinese (1敗, 1勝) formats
+  const isWin = streak.includes('勝') || streak.startsWith('W');
   const match = streak.match(/\d+/);
   const count = match ? match[0] : '1';
   const displayLabel = isWin ? `W${count}` : `L${count}`;
