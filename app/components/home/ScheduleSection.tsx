@@ -31,18 +31,18 @@ export function ScheduleSection({ games }: ScheduleSectionProps) {
                 <Image 
                   src={brothersInfo.officialLogoUrl} 
                   alt="" 
+                  width={180}
+                  height={180}
                   className="bg-logo bg-logo-left"
-                  fill
-                  style={{ objectFit: 'cover' }}
                 />
               )}
               {opponentInfo.officialLogoUrl && (
                 <Image 
                   src={opponentInfo.officialLogoUrl} 
                   alt="" 
+                  width={180}
+                  height={180}
                   className="bg-logo bg-logo-right"
-                  fill
-                  style={{ objectFit: 'cover' }}
                 />
               )}
 
@@ -120,6 +120,7 @@ export function ScheduleSection({ games }: ScheduleSectionProps) {
           height: 180px;
           opacity: 0.15;
           z-index: 0;
+          object-fit: cover;
         }
 
         .bg-logo-left {
