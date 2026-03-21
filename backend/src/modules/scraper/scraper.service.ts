@@ -53,34 +53,34 @@ export class ScraperService {
       {
         type: 'regular_season',
         standings: [
-          { rank: 1, teamName: '中信兄弟', teamCode: 'BRO', wins: 70, losses: 50, draws: 0, gamesBehind: '.0', winRate: '58.3%', streak: '1L' },
-          { rank: 2, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 66, losses: 54, draws: 0, gamesBehind: '4.0', winRate: '55.0%', streak: '1L' },
-          { rank: 3, teamName: '樂天桃猿', teamCode: 'RAK', wins: 62, losses: 57, draws: 1, gamesBehind: '7.5', winRate: '52.1%', streak: '1W' },
-          { rank: 4, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 59, losses: 59, draws: 2, gamesBehind: '10.0', winRate: '50.0%', streak: '1W' },
-          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 55, losses: 64, draws: 1, gamesBehind: '14.5', winRate: '46.2%', streak: '5L' },
-          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 46, losses: 74, draws: 0, gamesBehind: '24.0', winRate: '38.3%', streak: '6W' },
+          { rank: 1, teamName: '中信兄弟', teamCode: 'BRO', wins: 70, losses: 50, draws: 0, gamesBehind: '.0', winRate: '58.3%', streak: '1敗' },
+          { rank: 2, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 66, losses: 54, draws: 0, gamesBehind: '4.0', winRate: '55.0%', streak: '1敗' },
+          { rank: 3, teamName: '樂天桃猿', teamCode: 'RAK', wins: 62, losses: 57, draws: 1, gamesBehind: '7.5', winRate: '52.1%', streak: '1勝' },
+          { rank: 4, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 59, losses: 59, draws: 2, gamesBehind: '10.0', winRate: '50.0%', streak: '1勝' },
+          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 55, losses: 64, draws: 1, gamesBehind: '14.5', winRate: '46.2%', streak: '5敗' },
+          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 46, losses: 74, draws: 0, gamesBehind: '24.0', winRate: '38.3%', streak: '6勝' },
         ]
       },
       {
         type: 'first_half',
         standings: [
-          { rank: 1, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 36, losses: 24, draws: 0, gamesBehind: '.0', winRate: '60.0%', streak: '3W' },
-          { rank: 2, teamName: '中信兄弟', teamCode: 'BRO', wins: 34, losses: 26, draws: 0, gamesBehind: '2.0', winRate: '56.7%', streak: '2L' },
-          { rank: 3, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '2W' },
-          { rank: 4, teamName: '樂天桃猿', teamCode: 'RAK', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '5L' },
-          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 29, losses: 31, draws: 0, gamesBehind: '7.0', winRate: '48.3%', streak: '1L' },
-          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 21, losses: 39, draws: 0, gamesBehind: '15.0', winRate: '35.0%', streak: '1W' },
+          { rank: 1, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 36, losses: 24, draws: 0, gamesBehind: '.0', winRate: '60.0%', streak: '3勝' },
+          { rank: 2, teamName: '中信兄弟', teamCode: 'BRO', wins: 34, losses: 26, draws: 0, gamesBehind: '2.0', winRate: '56.7%', streak: '2敗' },
+          { rank: 3, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '2勝' },
+          { rank: 4, teamName: '樂天桃猿', teamCode: 'RAK', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '5敗' },
+          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 29, losses: 31, draws: 0, gamesBehind: '7.0', winRate: '48.3%', streak: '1敗' },
+          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 21, losses: 39, draws: 0, gamesBehind: '15.0', winRate: '35.0%', streak: '1敗' },
         ]
       },
       {
         type: 'second_half',
         standings: [
-          { rank: 1, teamName: '中信兄弟', teamCode: 'BRO', wins: 36, losses: 24, draws: 0, gamesBehind: '.0', winRate: '60.0%', streak: '1L' },
-          { rank: 2, teamName: '樂天桃猿', teamCode: 'RAK', wins: 32, losses: 27, draws: 1, gamesBehind: '3.5', winRate: '54.2%', streak: '1W' },
-          { rank: 3, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '1L' },
-          { rank: 4, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 29, losses: 29, draws: 2, gamesBehind: '6.0', winRate: '50.0%', streak: '1W' },
-          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 26, losses: 33, draws: 1, gamesBehind: '9.5', winRate: '44.1%', streak: '5L' },
-          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 25, losses: 35, draws: 0, gamesBehind: '11.0', winRate: '41.7%', streak: '6W' },
+          { rank: 1, teamName: '中信兄弟', teamCode: 'BRO', wins: 36, losses: 24, draws: 0, gamesBehind: '.0', winRate: '60.0%', streak: '1敗' },
+          { rank: 2, teamName: '樂天桃猿', teamCode: 'RAK', wins: 32, losses: 27, draws: 1, gamesBehind: '3.5', winRate: '54.2%', streak: '1敗' },
+          { rank: 3, teamName: '統一7-ELEVEn獅', teamCode: 'UNI', wins: 30, losses: 30, draws: 0, gamesBehind: '6.0', winRate: '50.0%', streak: '1敗' },
+          { rank: 4, teamName: '台鋼雄鷹', teamCode: 'TSG', wins: 29, losses: 29, draws: 2, gamesBehind: '6.0', winRate: '50.0%', streak: '1敗' },
+          { rank: 5, teamName: '味全龍', teamCode: 'WDR', wins: 26, losses: 33, draws: 1, gamesBehind: '9.5', winRate: '44.1%', streak: '5敗' },
+          { rank: 6, teamName: '富邦悍將', teamCode: 'FUB', wins: 25, losses: 35, draws: 0, gamesBehind: '11.0', winRate: '41.7%', streak: '6敗' },
         ]
       }
     ];
