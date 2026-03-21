@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { MdCalendarMonth, MdLocationOn } from 'react-icons/md';
 import { colors } from '@/app/lib/design-tokens';
 import { GameSchedule } from '@/app/lib/api';
@@ -26,22 +25,20 @@ export function ScheduleSection({ games }: ScheduleSectionProps) {
           const opponentInfo = getTeamInfo(game.opponent);
           return (
             <div key={game.id} className="game-card">
-              {/* 背景装饰 */}
+              {/* 背景装饰 - 纯装饰，使用 img 标签 */}
               {brothersInfo.officialLogoUrl && (
-                <Image 
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
                   src={brothersInfo.officialLogoUrl} 
                   alt="" 
-                  width={180}
-                  height={180}
                   className="bg-logo bg-logo-left"
                 />
               )}
               {opponentInfo.officialLogoUrl && (
-                <Image 
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
                   src={opponentInfo.officialLogoUrl} 
                   alt="" 
-                  width={180}
-                  height={180}
                   className="bg-logo bg-logo-right"
                 />
               )}
@@ -120,7 +117,6 @@ export function ScheduleSection({ games }: ScheduleSectionProps) {
           height: 180px;
           opacity: 0.15;
           z-index: 0;
-          object-fit: cover;
         }
 
         .bg-logo-left {
