@@ -211,9 +211,21 @@ export default function Home() {
   }
 
   return (
-    <main style={{ padding: '2rem 3rem', maxWidth: '1700px', margin: '0 auto', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
+    <main style={{ 
+      padding: 'clamp(1rem, 5vw, 3rem)', 
+      maxWidth: '1700px', 
+      margin: '0 auto', 
+      backgroundColor: colors.background, 
+      minHeight: '100vh' 
+    }}>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem', alignItems: 'stretch' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'minmax(0, 1fr)',
+        gap: '2rem', 
+        marginBottom: '2.5rem', 
+        alignItems: 'stretch'
+      }} className="responsive-grid">
         
         <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `4px solid ${colors.primary.DEFAULT}`, paddingBottom: '1rem' }}>
@@ -410,7 +422,7 @@ export default function Home() {
           </h2>
         </div>
         
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
           {mockVideos.map((video) => (
             <a 
               key={video.id} 
@@ -470,6 +482,18 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <style jsx>{`
+        .responsive-grid {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        
+        @media (min-width: 768px) {
+          .responsive-grid {
+            grid-template-columns: 1.4fr 1fr;
+          }
+        }
+      `}</style>
     </main>
   );
 }
