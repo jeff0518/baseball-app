@@ -247,7 +247,7 @@ const MOCK_GAMES: GameSchedule[] = [
 export const playerApi = {
   getStandings: async (period: string = 'full'): Promise<Standing[]> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/standings/current`);
+      const response = await fetch(`${API_BASE_URL}/standings/current?period=${period}`);
       if (!response.ok) throw new Error('Failed to fetch standings');
       
       const result = await response.json();

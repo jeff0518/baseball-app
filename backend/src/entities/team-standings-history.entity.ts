@@ -23,6 +23,9 @@ export class TeamStandingsHistory {
   @JoinColumn({ name: 'team_id' })
   team: Team;
 
+  @Column('varchar', { length: 20, default: 'regular_season' })
+  season_type: string; // 'regular_season', 'first_half', 'second_half'
+
   @Column('int')
   rank: number;
 

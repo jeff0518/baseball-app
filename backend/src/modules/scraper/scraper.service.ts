@@ -20,8 +20,15 @@ export interface TeamStandingRaw {
 
 @Injectable()
 export class ScraperService {
-  private readonly CPBL_URL =
+  private readonly CPBL_BASE_URL =
     'https://www.rebas.tw/season/CPBL-2025-JO/leaderboard?stats=team&section=standard';
+
+  // 映射 tab 參數到 season_type
+  private readonly TAB_MAP = {
+    '': 'regular_season',      // 默認是全年度
+    '&tab=half1': 'first_half',   // 上半季
+    '&tab=half2': 'second_half',  // 下半季
+  };
 
   constructor(
     @InjectRepository(TeamStanding)
@@ -36,15 +43,27 @@ export class ScraperService {
   async scrapeAndSaveTeamStandings(): Promise<void> {
     console.log('🌐 Starting CPBL standings scrape at', new Date().toISOString());
     try {
-      const standings = await this.scrapeTeamStandings();
-      await this.saveStandings(standings);
+      // 爬蟲 3 種季段的資料
+      const allStandings = await this.scrapeAllPeriods();
+      await this.saveAllStandings(allStandings);
       console.log('✅ CPBL standings saved successfully');
     } catch (error) {
       console.error('❌ Scrape failed:', error instanceof Error ? error.message : String(error));
     }
   }
 
-  async scrapeTeamStandings(): Promise<TeamStandingRaw[]> {
+  private async scrapeAllPeriods(): Promise<Array<{ type: string; standings: TeamStandingRaw[] }>> {
+    const results = [];
+    for (const [tabParam, seasonType] of Object.entries(this.TAB_MAP)) {
+      const url = this.CPBL_BASE_URL + tabParam;
+      console.log(`📥 Scraping ${seasonType} from ${url}`);
+      const standings = await this.scrapeTeamStandings(url);
+      results.push({ type: seasonType, standings });
+    }
+    return results;
+  }
+
+  async scrapeTeamStandings(url: string = this.CPBL_BASE_URL): Promise<TeamStandingRaw[]> {
     let browser;
     try {
       browser = await puppeteer.launch({
@@ -53,7 +72,7 @@ export class ScraperService {
       });
 
       const page = await browser.newPage();
-      await page.goto(this.CPBL_URL, {
+      await page.goto(url, {
         waitUntil: 'networkidle2',
         timeout: 30000,
       });
@@ -135,7 +154,7 @@ export class ScraperService {
     return 'UNKNOWN';
   }
 
-  private async saveStandings(standings: TeamStandingRaw[]): Promise<void> {
+  private async saveAllStandings(allStandings: Array<{ type: string; standings: TeamStandingRaw[] }>): Promise<void> {
     const season = await this.seasonRepository.findOne({
       where: { code: 'CPBL-2025' },
     });
@@ -147,51 +166,55 @@ export class ScraperService {
     const now = new Date();
     const recordedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    for (const standing of standings) {
-      const winRateNum = this.parseWinRate(standing.winRate);
-      const gamesBehindNum = this.parseGamesBehind(standing.gamesBehind);
+    for (const { type: seasonType, standings } of allStandings) {
+      for (const standing of standings) {
+        const winRateNum = this.parseWinRate(standing.winRate);
+        const gamesBehindNum = this.parseGamesBehind(standing.gamesBehind);
 
-      const teamStandingData = {
-        season_id: season.id,
-        team_id: standing.teamCode,
-        rank: standing.rank,
-        wins: standing.wins,
-        losses: standing.losses,
-        draws: standing.draws,
-        winRate: winRateNum,
-        gamesBehind: gamesBehindNum,
-        streak: standing.streak,
-        scrapedAt: now,
-      };
+        const teamStandingData = {
+          season_id: season.id,
+          team_id: standing.teamCode,
+          season_type: seasonType,
+          rank: standing.rank,
+          wins: standing.wins,
+          losses: standing.losses,
+          draws: standing.draws,
+          winRate: winRateNum,
+          gamesBehind: gamesBehindNum,
+          streak: standing.streak,
+          scrapedAt: now,
+        };
 
-      // 檢查是否存在，存在則更新，不存在則插入
-      const existing = await this.teamStandingRepository.findOne({
-        where: { season_id: season.id, team_id: standing.teamCode },
-      });
+        // 檢查是否存在，存在則更新，不存在則插入
+        const existing = await this.teamStandingRepository.findOne({
+          where: { season_id: season.id, team_id: standing.teamCode, season_type: seasonType },
+        });
 
-      if (existing) {
-        await this.teamStandingRepository.update(
-          { season_id: season.id, team_id: standing.teamCode },
-          teamStandingData,
-        );
-      } else {
-        await this.teamStandingRepository.save(teamStandingData);
+        if (existing) {
+          await this.teamStandingRepository.update(
+            { season_id: season.id, team_id: standing.teamCode, season_type: seasonType },
+            teamStandingData,
+          );
+        } else {
+          await this.teamStandingRepository.save(teamStandingData);
+        }
+
+        // 插入 team_standings_history (歷史記錄)
+        await this.teamStandingsHistoryRepository.save({
+          season_id: season.id,
+          team_id: standing.teamCode,
+          season_type: seasonType,
+          rank: standing.rank,
+          wins: standing.wins,
+          losses: standing.losses,
+          draws: standing.draws,
+          winRate: winRateNum,
+          gamesBehind: gamesBehindNum,
+          streak: standing.streak,
+          recorded_date: recordedDate,
+          scrapedAt: now,
+        });
       }
-
-      // 插入 team_standings_history (歷史記錄)
-      await this.teamStandingsHistoryRepository.save({
-        season_id: season.id,
-        team_id: standing.teamCode,
-        rank: standing.rank,
-        wins: standing.wins,
-        losses: standing.losses,
-        draws: standing.draws,
-        winRate: winRateNum,
-        gamesBehind: gamesBehindNum,
-        streak: standing.streak,
-        recorded_date: recordedDate,
-        scrapedAt: now,
-      });
     }
   }
 

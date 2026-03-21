@@ -19,9 +19,18 @@ export class ScraperController {
   ) {}
 
   @Get('current')
-  async getCurrentStandings(): Promise<any> {
+  async getCurrentStandings(@Query('period') period: string = 'regular_season'): Promise<any> {
     try {
+      // 映射前端 period 到資料庫 season_type
+      const seasonTypeMap = {
+        full: 'regular_season',
+        first: 'first_half',
+        second: 'second_half',
+      };
+      const seasonType = seasonTypeMap[period as keyof typeof seasonTypeMap] || 'regular_season';
+
       const standings = await this.teamStandingRepository.find({
+        where: { season_type: seasonType },
         order: { rank: 'ASC' },
       });
       
@@ -41,6 +50,7 @@ export class ScraperController {
         })),
         timestamp: new Date(),
         season: 'CPBL-2025',
+        period: seasonType,
       };
     } catch (error) {
       console.error('Error in getCurrentStandings:', error);

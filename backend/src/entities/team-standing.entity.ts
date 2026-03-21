@@ -3,7 +3,7 @@ import { Team } from './team.entity';
 import { Season } from './season.entity';
 
 @Entity('team_standings')
-@Unique(['season_id', 'team_id'])
+@Unique(['season_id', 'team_id', 'season_type'])
 export class TeamStanding {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -21,6 +21,9 @@ export class TeamStanding {
   @ManyToOne(() => Team, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'team_id' })
   team: Team;
+
+  @Column('varchar', { length: 20, default: 'regular_season' })
+  season_type: string; // 'regular_season', 'first_half', 'second_half'
 
   @Column('int')
   rank: number;
