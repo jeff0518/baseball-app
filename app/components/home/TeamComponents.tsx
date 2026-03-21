@@ -40,6 +40,7 @@ export function TeamLogoOnly({
           src={info.avatarUrl} 
           alt={team} 
           fill
+          sizes={size}
           style={{ objectFit: 'contain' }} 
           onError={() => setImgError(true)}
         />

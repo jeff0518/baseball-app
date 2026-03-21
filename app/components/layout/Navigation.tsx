@@ -50,6 +50,7 @@ export function Navigation() {
               src={brothers.officialLogoUrl} 
               alt="Baseball App Logo - 中信兄弟"
               fill
+              sizes="45px"
               style={{ objectFit: 'contain' }}
             />
           </div>
