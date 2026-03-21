@@ -3,17 +3,12 @@
 import Image from 'next/image';
 import { FaYoutube } from 'react-icons/fa';
 import { MdPlayArrow } from 'react-icons/md';
+import { YouTubeVideo } from '../../lib/api';
 
 import styles from './HighlightsSection.module.css';
 
-interface Video {
-  id: string;
-  title: string;
-  thumbnail: string;
-}
-
 interface HighlightsSectionProps {
-  videos: Video[];
+  videos: YouTubeVideo[];
 }
 
 export function HighlightsSection({ videos }: HighlightsSectionProps) {

@@ -78,6 +78,13 @@ export interface GameSchedule {
   isHome: boolean;
 }
 
+export interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+  publishedAt: string;
+}
+
 export type Player = BatterStats | PitcherStats;
 
 export interface ApiResponse<T> {
@@ -299,5 +306,18 @@ export const playerApi = {
   getPlayerById: async (playerId: string): Promise<BatterStats | null> => {
     await new Promise(resolve => setTimeout(resolve, 300));
     return MOCK_BATTERS.find((b) => b.playerId === playerId) || null;
+  },
+
+  getLatestVideos: async (limit: number = 3): Promise<YouTubeVideo[]> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/videos/latest?limit=${limit}`);
+      if (!response.ok) throw new Error('Failed to fetch videos');
+      
+      const result = await response.json();
+      return result.data || [];
+    } catch (error) {
+      console.error('Failed to fetch videos:', error);
+      return [];
+    }
   },
 };

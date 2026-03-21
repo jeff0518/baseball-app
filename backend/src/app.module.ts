@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BatterStats, PitcherStats, GameRecord, Team, Season, TeamStanding, TeamStandingsHistory } from './entities';
 import { ScraperModule } from './modules/scraper/scraper.module';
+import { VideosModule } from './modules/videos/videos.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ScraperModule } from './modules/scraper/scraper.module';
       dropSchema: false,
     }),
     ScraperModule,
+    VideosModule,
   ],
 })
 export class AppModule {}

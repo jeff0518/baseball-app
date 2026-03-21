@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { playerApi, Standing, GameSchedule, Player } from "./lib/api";
+import { playerApi, Standing, GameSchedule, Player, YouTubeVideo } from "./lib/api";
 
 import { LoadingScreen } from "./components/home/LoadingScreen";
 import { StandingsSection } from "./components/home/StandingsSection";
@@ -10,33 +10,6 @@ import { PlayersSection } from "./components/home/PlayersSection";
 import { HighlightsSection } from "./components/home/HighlightsSection";
 import styles from "./page.module.css";
 
-// 模拟视频数据
-const MOCK_VIDEOS = [
-  {
-    id: "NEXrXUiPbUE",
-    title:
-      "【2026】 這不是你想的小紅帽！中信兄弟菜鳥日話劇表演角色抽籤大亂鬥...",
-    thumbnail: "https://img.youtube.com/vi/NEXrXUiPbUE/hqdefault.jpg",
-  },
-  {
-    id: "v_p68jU-U-Q",
-    title: "【2026】 蠟筆小新？哆啦A夢？兄弟們夢想成為哪個角色呢？",
-    thumbnail: "https://img.youtube.com/vi/v_p68jU-U-Q/hqdefault.jpg",
-  },
-  {
-    id: "8o7T8YyR4W8",
-    title:
-      "【2026】 WBC中華隊左營開訓！鄭浩均當兵漏接通知、江坤宇與卡仔相見...",
-    thumbnail: "https://img.youtube.com/vi/8o7T8YyR4W8/hqdefault.jpg",
-  },
-  {
-    id: "h2L69kE9Dfk",
-    title:
-      "【2026】 三小象Driveline心得分享，巧遇Carroll訓練：這就是大聯盟的節奏",
-    thumbnail: "https://img.youtube.com/vi/h2L69kE9Dfk/hqdefault.jpg",
-  },
-];
-
 export default function Home() {
   // 状态管理
   const [standings, setStandings] = useState<Standing[]>([]);
@@ -44,6 +17,7 @@ export default function Home() {
   const [games, setGames] = useState<GameSchedule[]>([]);
   const [featuredPlayers, setFeaturedPlayers] = useState<Player[]>([]);
   const [playerType, setPlayerType] = useState<"batter" | "pitcher">("batter");
+  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
 
@@ -54,16 +28,18 @@ export default function Home() {
       setProgress(20);
 
       try {
-        const [standingsData, gamesData, playersData] = await Promise.all([
+        const [standingsData, gamesData, playersData, videosData] = await Promise.all([
           playerApi.getStandings(standingPeriod),
           playerApi.getUpcomingGames(),
           playerApi.getFeaturedPlayers(playerType),
+          playerApi.getLatestVideos(3),
         ]);
 
         setProgress(70);
         setStandings(standingsData);
         setGames(gamesData);
         setFeaturedPlayers(playersData);
+        setVideos(videosData);
         setProgress(100);
 
         setTimeout(() => setLoading(false), 500);
@@ -105,7 +81,7 @@ export default function Home() {
 
       {/* 下部：精彩回顾 */}
       <div className={styles.contentWrapper}>
-        <HighlightsSection videos={MOCK_VIDEOS} />
+        <HighlightsSection videos={videos} />
       </div>
     </main>
   );
