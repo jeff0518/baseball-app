@@ -11,7 +11,7 @@ export function Navigation() {
     <nav
       style={{
         backgroundColor: colors.secondary.DEFAULT,
-        padding: '1rem 3rem',
+        padding: '1rem clamp(1rem, 3vw, 2rem)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

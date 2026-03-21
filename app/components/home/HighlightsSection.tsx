@@ -57,7 +57,7 @@ export function HighlightsSection({ videos }: HighlightsSectionProps) {
 
       <style jsx>{`
         .highlights-section {
-          padding-bottom: 4rem;
+          padding-bottom: 2rem;
         }
 
         .section-header {
