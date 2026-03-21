@@ -1,4 +1,6 @@
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
 export interface BatterStats {
   playerId: string;
@@ -50,6 +52,22 @@ export interface Standing {
   winRate: number;
   gamesBehind: string;
   streak: string;
+}
+
+export interface TeamStandingDTO {
+  rank: number;
+  teamId: string;
+  teamName: string;
+  teamLogoUrl: string;
+  teamAvatarUrl: string;
+  wins: number;
+  losses: number;
+  draws: number;
+  gamesPlayed: number;
+  winRate: string;
+  gamesBehind: string;
+  streak: string;
+  scrapedAt: Date;
 }
 
 export interface GameSchedule {
@@ -229,8 +247,33 @@ const MOCK_GAMES: GameSchedule[] = [
 
 export const playerApi = {
   getStandings: async (period: string = 'full'): Promise<Standing[]> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    return MOCK_STANDINGS[period] || MOCK_STANDINGS['full'];
+    if (USE_MOCK_DATA) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return MOCK_STANDINGS[period] || MOCK_STANDINGS['full'];
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/standings/current`);
+      if (!response.ok) throw new Error('Failed to fetch standings');
+      
+      const result = await response.json();
+      
+      // 轉換後端資料格式為前端 Standing 格式
+      return (result.data || []).map((team: TeamStandingDTO) => ({
+        team: team.teamName,
+        played: team.gamesPlayed,
+        won: team.wins,
+        lost: team.losses,
+        drawn: team.draws,
+        winRate: parseFloat(team.winRate) / 100,
+        gamesBehind: team.gamesBehind === '0' ? '-' : team.gamesBehind,
+        streak: team.streak,
+      }));
+    } catch (error) {
+      console.error('Failed to fetch standings, using mock data:', error);
+      await new Promise(resolve => setTimeout(resolve, 300));
+      return MOCK_STANDINGS[period] || MOCK_STANDINGS['full'];
+    }
   },
 
   getUpcomingGames: async (): Promise<GameSchedule[]> => {
