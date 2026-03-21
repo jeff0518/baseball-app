@@ -6,11 +6,25 @@ import { colors } from './lib/design-tokens';
 import { getTeamInfo } from './lib/teams';
 import { PlayerCard } from './components/players/PlayerCard';
 
+// 導入專業 React Icons
+import { 
+  MdLeaderboard, 
+  MdCalendarMonth, 
+  MdLocationOn, 
+  MdVideoLibrary, 
+  MdAnalytics,
+  MdPlayArrow
+} from 'react-icons/md';
+import { FaFire, FaYoutube } from 'react-icons/fa';
+import { GiElephant } from 'react-icons/gi'; // 象迷專屬備援圖示
+
 /**
  * 專業隊徽元件 - 使用本地 team_avatar 路徑
  */
 function TeamLogoOnly({ team, size = '40px', shadow = true }: { team: string; size?: string; shadow?: boolean }) {
   const info = getTeamInfo(team);
+  const [imgError, setImgError] = useState(false);
+
   return (
     <div style={{ 
       backgroundColor: colors.white, 
@@ -25,8 +39,13 @@ function TeamLogoOnly({ team, size = '40px', shadow = true }: { team: string; si
       zIndex: 2,
       overflow: 'hidden'
     }}>
-      {info.avatarUrl ? (
-        <img src={info.avatarUrl} alt={team} style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+      {info.avatarUrl && !imgError ? (
+        <img 
+          src={info.avatarUrl} 
+          alt={team} 
+          style={{ width: '85%', height: '85%', objectFit: 'contain' }} 
+          onError={() => setImgError(true)}
+        />
       ) : (
         <span style={{ fontSize: `calc(${size} * 0.5)` }}>{info.icon}</span>
       )}
@@ -49,10 +68,9 @@ function TeamBadge({ team, size = '1.2rem', showLabel = true }: { team: string; 
  */
 function StreakBadge({ streak }: { streak: string }) {
   const isWin = streak.includes('勝');
-  const count = streak.match(/\d+/)?.[0] || '1';
+  const match = streak.match(/\d+/);
+  const count = match ? match[0] : '1';
   const displayLabel = isWin ? `W${count}` : `L${count}`;
-  
-  // 勝場用紅色，敗場改用綠色
   const color = isWin ? '#e63946' : '#10B981';
   
   return (
@@ -82,6 +100,7 @@ export default function Home() {
   const [playerType, setPlayerType] = useState<'batter' | 'pitcher'>('batter');
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -115,42 +134,76 @@ export default function Home() {
 
   const mockVideos = [
     { id: 'NEXrXUiPbUE', title: '【2026】 這不是你想的小紅帽！中信兄弟菜鳥日話劇表演角色抽籤大亂鬥...', thumbnail: 'https://img.youtube.com/vi/NEXrXUiPbUE/hqdefault.jpg' },
-    { id: 'v1', title: '【2026】 蠟筆小新？哆啦A夢？兄弟們夢想成為哪個角色呢？', thumbnail: 'https://img.youtube.com/vi/v_p68jU-U-Q/hqdefault.jpg' },
-    { id: 'v2', title: '【2026】 WBC中華隊左營開訓！鄭浩均當兵漏接通知、江坤宇與卡仔相見...', thumbnail: 'https://img.youtube.com/vi/8o7T8YyR4W8/hqdefault.jpg' },
-    { id: 'v3', title: '【2026】 三小象Driveline心得分享，巧遇Carroll訓練：這就是大聯盟的節奏', thumbnail: 'https://img.youtube.com/vi/h2L69kE9Dfk/hqdefault.jpg' },
+    { id: 'v_p68jU-U-Q', title: '【2026】 蠟筆小新？哆啦A夢？兄弟們夢想成為哪個角色呢？', thumbnail: 'https://img.youtube.com/vi/v_p68jU-U-Q/hqdefault.jpg' },
+    { id: '8o7T8YyR4W8', title: '【2026】 WBC中華隊左營開訓！鄭浩均當兵漏接通知、江坤宇與卡仔相見...', thumbnail: 'https://img.youtube.com/vi/8o7T8YyR4W8/hqdefault.jpg' },
+    { id: 'h2L69kE9Dfk', title: '【2026】 三小象Driveline心得分享，巧遇Carroll訓練：這就是大聯盟的節奏', thumbnail: 'https://img.youtube.com/vi/h2L69kE9Dfk/hqdefault.jpg' },
   ];
 
   if (loading) {
     return (
       <div style={{ 
-        height: '80vh', 
+        height: '100vh', 
         display: 'flex', 
         flexDirection: 'column', 
         justifyContent: 'center', 
         alignItems: 'center',
-        gap: '2rem'
+        backgroundColor: colors.white,
+        gap: '2.5rem'
       }}>
-        <div style={{ width: '120px', height: '120px', animation: 'bounce 1s infinite' }}>
-          <img src="/derek-logo.png" alt="Loading" style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-          <div style={{ fontSize: '4rem', textAlign: 'center' }}>⚾</div>
-        </div>
-        <div style={{ width: '300px', height: '12px', backgroundColor: '#eee', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
+        {/* 精緻呼吸動畫 Logo */}
+        <div style={{ 
+          width: '140px', 
+          height: '140px', 
+          animation: 'pulse 2s infinite ease-in-out',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative'
+        }}>
+          {!logoError ? (
+            <img 
+              src="/derek-logo.png" 
+              alt="Loading" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+              onError={() => setLogoError(true)} 
+            />
+          ) : (
+            <GiElephant size="6rem" color={colors.primary} />
+          )}
+          {/* 背景光圈效果 */}
           <div style={{ 
-            width: `${progress}%`, 
+            position: 'absolute', 
+            width: '100%', 
             height: '100%', 
-            backgroundColor: colors.primary, 
-            transition: 'width 0.3s ease-out',
-            borderRadius: '10px'
+            borderRadius: '50%', 
+            border: `2px solid ${colors.primary}`,
+            animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+            opacity: 0.5
           }} />
         </div>
-        <div style={{ color: colors.secondary, fontWeight: 'bold', fontSize: '1.2rem', letterSpacing: '2px' }}>
-          正在熱身中... {progress}%
+
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '280px', height: '6px', backgroundColor: '#f0f0f0', borderRadius: '10px', overflow: 'hidden' }}>
+            <div style={{ 
+              width: `${progress}%`, 
+              height: '100%', 
+              backgroundColor: colors.primary, 
+              transition: 'width 0.4s ease-out',
+              boxShadow: `0 0 10px ${colors.primary}`
+            }} />
+          </div>
+          <div style={{ color: colors.secondary, fontWeight: '900', fontSize: '1.1rem', letterSpacing: '4px', textTransform: 'uppercase' }}>
+            戰情加載中 {progress}%
+          </div>
         </div>
+
         <style jsx global>{`
-          @keyframes bounce {
-            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
-            50% { transform: translateY(-20px) scale(1.1) rotate(180deg); }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(252, 207, 0, 0)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(252, 207, 0, 0.4)); }
+          }
+          @keyframes ping {
+            75%, 100% { transform: scale(1.5); opacity: 0; }
           }
         `}</style>
       </div>
@@ -160,14 +213,12 @@ export default function Home() {
   return (
     <main style={{ padding: '2rem 3rem', maxWidth: '1700px', margin: '0 auto', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
       
-      {/* 頂部資訊：戰績與賽程 */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem', alignItems: 'stretch' }}>
         
-        {/* 聯賽排名 */}
         <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `4px solid ${colors.primary}`, paddingBottom: '1rem' }}>
             <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <span style={{ fontSize: '2rem' }}>🏆</span> 聯賽排名
+              <MdLeaderboard size="2rem" color={colors.secondary} /> 聯賽排名
             </h2>
             <div style={{ display: 'flex', gap: '0.4rem', backgroundColor: '#f0f0f0', padding: '5px', borderRadius: '15px' }}>
               {standingTabs.map((tab) => (
@@ -252,10 +303,9 @@ export default function Home() {
           </table>
         </section>
 
-        {/* 近期賽程 */}
         <section style={{ backgroundColor: colors.secondary, borderRadius: '24px', padding: '2rem', color: colors.white, boxShadow: '0 15px 50px rgba(11,27,61,0.25)', display: 'flex', flexDirection: 'column' }}>
           <h2 style={{ fontSize: '1.6rem', color: colors.primary, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <span>📅</span> 近期賽程
+            <MdCalendarMonth size="2rem" /> 近期賽程
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
             {games.map((game) => {
@@ -274,7 +324,6 @@ export default function Home() {
                   flexDirection: 'column',
                   justifyContent: 'center'
                 }}>
-                  {/* 對角 Logo 背景裝飾 */}
                   {brothersInfo.officialLogoUrl && (
                     <img src={brothersInfo.officialLogoUrl} alt="" style={{ position: 'absolute', left: '-25px', top: '-25px', width: '180px', height: '180px', opacity: 0.15, zIndex: 0, transform: 'rotate(15deg)', filter: 'grayscale(30%)' }} />
                   )}
@@ -287,7 +336,7 @@ export default function Home() {
                       {game.date} · <span style={{ opacity: 0.8 }}>{game.time}</span>
                     </div>
                     <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', padding: '3px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: colors.primary, fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.05)' }}>
-                      <span>📍</span> {game.location}
+                      <MdLocationOn size="1rem" /> {game.location}
                     </div>
                   </div>
 
@@ -303,11 +352,10 @@ export default function Home() {
         </section>
       </div>
 
-      {/* 戰將數據 */}
       <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <span style={{ fontSize: '2rem' }}>🔥</span> 戰將數據
+            <FaFire size="2rem" color="#e63946" /> 戰將數據
           </h2>
           <div style={{ display: 'flex', backgroundColor: '#f0f0f0', borderRadius: '15px', padding: '5px' }}>
             <button
@@ -324,7 +372,7 @@ export default function Home() {
                 transition: 'all 0.2s'
               }}
             >
-              強攻野手 ⚾
+              強攻野手 <MdAnalytics style={{ marginLeft: '0.5rem' }} />
             </button>
             <button
               onClick={() => setPlayerType('pitcher')}
@@ -340,7 +388,7 @@ export default function Home() {
                 transition: 'all 0.2s'
               }}
             >
-              王牌投手 💎
+              王牌投手 <MdAnalytics style={{ marginLeft: '0.5rem' }} />
             </button>
           </div>
         </div>
@@ -352,11 +400,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 影片藝廊 */}
       <section style={{ paddingBottom: '4rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-          <span style={{ color: colors.primary, fontWeight: 'bold', fontSize: '1rem', textTransform: 'uppercase' }}>Video</span>
-          <h2 style={{ fontSize: '1.8rem', color: colors.secondary, margin: 0 }}>【爪嗨賴】▸ 全部播放</h2>
+          <span style={{ color: colors.primary, fontWeight: 'bold', fontSize: '1rem', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <FaYoutube color="#ff0000" /> Video
+          </span>
+          <h2 style={{ fontSize: '1.8rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            【爪嗨賴】▸ 全部播放 <MdVideoLibrary size="1.5rem" />
+          </h2>
         </div>
         
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
@@ -372,7 +423,7 @@ export default function Home() {
             >
               <div style={{ 
                 backgroundColor: colors.primary, 
-                borderRadius: '8px', 
+                borderRadius: '12px', 
                 overflow: 'hidden', 
                 boxShadow: '0 4px 15px rgba(0,0,0,0.1)' 
               }}>
@@ -397,7 +448,7 @@ export default function Home() {
                     color: 'white',
                     fontSize: '1.2rem'
                   }}>
-                    ▶
+                    <MdPlayArrow />
                   </div>
                 </div>
                 <div style={{ 
