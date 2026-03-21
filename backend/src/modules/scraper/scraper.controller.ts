@@ -28,30 +28,40 @@ export class ScraperController {
         second: 'second_half',
       };
       const seasonType = seasonTypeMap[period as keyof typeof seasonTypeMap] || 'regular_season';
+      console.log(`📊 getCurrentStandings called with period=${period}, seasonType=${seasonType}`);
 
       const standings = await this.teamStandingRepository.find({
         where: { season_type: seasonType },
         order: { rank: 'ASC' },
       });
+
+      console.log(`  Found ${standings.length} standings records`);
       
       const teams = await this.teamRepository.find();
+      console.log(`  Found ${teams.length} teams`);
 
-      return {
-        data: standings.map((s) => ({
-          rank: s.rank,
-          teamId: s.team_id,
-          teamName: teams.find((t) => t.id === s.team_id)?.name || 'Unknown',
-          wins: s.wins,
-          losses: s.losses,
-          draws: s.draws,
-          winRate: `${(Number(s.winRate) * 100).toFixed(1)}%`,
-          gamesBehind: Number(s.gamesBehind).toFixed(1),
-          streak: s.streak,
-        })),
+      const result = {
+        data: standings.map((s) => {
+          const teamName = teams.find((t) => t.id === s.team_id)?.name || 'Unknown';
+          return {
+            rank: s.rank,
+            teamId: s.team_id,
+            teamName: teamName,
+            wins: s.wins,
+            losses: s.losses,
+            draws: s.draws,
+            winRate: `${(Number(s.winRate) * 100).toFixed(1)}%`,
+            gamesBehind: Number(s.gamesBehind).toFixed(1),
+            streak: s.streak,
+          };
+        }),
         timestamp: new Date(),
         season: 'CPBL-2025',
         period: seasonType,
       };
+
+      console.log(`  Returning ${result.data.length} teams`);
+      return result;
     } catch (error) {
       console.error('Error in getCurrentStandings:', error);
       throw error;
