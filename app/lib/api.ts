@@ -1,6 +1,5 @@
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
 
 export interface BatterStats {
   playerId: string;
@@ -247,11 +246,6 @@ const MOCK_GAMES: GameSchedule[] = [
 
 export const playerApi = {
   getStandings: async (period: string = 'full'): Promise<Standing[]> => {
-    if (USE_MOCK_DATA) {
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return MOCK_STANDINGS[period] || MOCK_STANDINGS['full'];
-    }
-
     try {
       const response = await fetch(`${API_BASE_URL}/standings/current`);
       if (!response.ok) throw new Error('Failed to fetch standings');
@@ -270,9 +264,8 @@ export const playerApi = {
         streak: team.streak,
       }));
     } catch (error) {
-      console.error('Failed to fetch standings, using mock data:', error);
-      await new Promise(resolve => setTimeout(resolve, 300));
-      return MOCK_STANDINGS[period] || MOCK_STANDINGS['full'];
+      console.error('Failed to fetch standings:', error);
+      throw error; // 不再使用 mock 數據，讓調用者處理錯誤
     }
   },
 
