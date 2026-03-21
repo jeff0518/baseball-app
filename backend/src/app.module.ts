@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { BatterStats, PitcherStats, GameRecord, Team, Season, TeamStanding, TeamStandingsHistory } from './entities';
 import { ScraperModule } from './modules/scraper/scraper.module';
 
@@ -10,6 +11,7 @@ import { ScraperModule } from './modules/scraper/scraper.module';
       isGlobal: true,
       envFilePath: '.env.local',
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
