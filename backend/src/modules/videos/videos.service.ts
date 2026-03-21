@@ -12,8 +12,43 @@ export interface YouTubeVideo {
 export class VideosService {
   // 兄弟象官方频道
   private readonly BROTHERS_CHANNEL_URL = 'https://www.youtube.com/@BrotherElephantTV05/videos';
+  
+  // 缓存存储
+  private cachedVideos: YouTubeVideo[] | null = null;
+  private lastFetchTime: number = 0;
+  private readonly CACHE_DURATION_MS = 3600000; // 1 小时
 
   async getLatestVideos(limit: number = 3): Promise<YouTubeVideo[]> {
+    // 检查缓存是否有效
+    const now = Date.now();
+    if (this.cachedVideos && (now - this.lastFetchTime < this.CACHE_DURATION_MS)) {
+      console.log('📦 Using cached videos');
+      return this.cachedVideos.slice(0, limit);
+    }
+
+    // 尝试爬取新数据
+    const videos = await this.scrapeVideos();
+    
+    if (videos.length > 0) {
+      // 更新缓存
+      this.cachedVideos = videos;
+      this.lastFetchTime = now;
+      console.log(`💾 Cached ${videos.length} videos`);
+    } else if (this.cachedVideos) {
+      // 爬虫失败但有缓存，使用缓存
+      console.log('⚠️  Scrape failed, using cached videos');
+      return this.cachedVideos.slice(0, limit);
+    } else {
+      // 没有缓存，使用默认数据
+      console.log('❌ Scrape failed, using fallback data');
+      return this.getDefaultVideos().slice(0, limit);
+    }
+
+    // 返回最新的N个视频
+    return videos.slice(0, limit);
+  }
+
+  private async scrapeVideos(): Promise<YouTubeVideo[]> {
     let browser;
     try {
       browser = await puppeteer.launch({
@@ -84,12 +119,11 @@ export class VideosService {
       });
 
       console.log(`✅ Found ${videos.length} videos`);
-      videos.forEach((v, idx) => {
-        console.log(`  ${idx + 1}. [${v.id}] ${v.title}`);
+      videos.slice(0, 5).forEach((v, idx) => {
+        console.log(`  ${idx + 1}. [${v.id}] ${v.title.substring(0, 60)}...`);
       });
 
-      // 返回最新的N个视频
-      return videos.slice(0, limit);
+      return videos;
     } catch (error) {
       console.error('❌ Failed to fetch YouTube videos:', error instanceof Error ? error.message : error);
       return [];
@@ -105,19 +139,19 @@ export class VideosService {
     return [
       {
         id: 'XQQd_K_3a6A',
-        title: '【RHINOSHIELD 壓制全場】03/21 謝榮豪中繼一局送出一次三振無失分',
+        title: '【RHINOSHIELD 壓制全場】03/21 謝榮豪中繼一局送出一次三振無失分｜CTBC Brothers 中信兄弟',
         thumbnail: 'https://img.youtube.com/vi/XQQd_K_3a6A/hqdefault.jpg',
         publishedAt: new Date().toISOString(),
       },
       {
         id: 'vmTqo67Cack',
-        title: '【RHINOSHIELD 壓制全場】03/21 羅戈先發4.2局狂飆七張老K僅失兩分',
+        title: '【RHINOSHIELD 壓制全場】03/21 羅戈先發4.2局狂飆七張老K僅失兩分｜CTBC Brothers 中信兄弟',
         thumbnail: 'https://img.youtube.com/vi/vmTqo67Cack/hqdefault.jpg',
         publishedAt: new Date().toISOString(),
       },
       {
         id: 'FmVQjJjZTKw',
-        title: '【中彰賓士美技連發】03/21 曾頌恩、張仁瑋一左一右！外野美技連發',
+        title: '【中彰賓士美技連發】03/21 曾頌恩、張仁瑋一左一右！外野美技連發｜CTBC Brothers 中信兄弟',
         thumbnail: 'https://img.youtube.com/vi/FmVQjJjZTKw/hqdefault.jpg',
         publishedAt: new Date().toISOString(),
       },
