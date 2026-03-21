@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { playerApi, Standing, GameSchedule, Player } from "./lib/api";
-import { colors } from "./lib/design-tokens";
+
 import { LoadingScreen } from "./components/home/LoadingScreen";
 import { StandingsSection } from "./components/home/StandingsSection";
 import { ScheduleSection } from "./components/home/ScheduleSection";
 import { PlayersSection } from "./components/home/PlayersSection";
 import { HighlightsSection } from "./components/home/HighlightsSection";
+import styles from "./page.module.css";
 
 // 模拟视频数据
 const MOCK_VIDEOS = [
@@ -82,9 +83,9 @@ export default function Home() {
 
   // 主页内容
   return (
-    <main className="home-page">
+    <main className={styles.homePage}>
       {/* 上部：排名 + 赛程 */}
-      <div className="top-section">
+      <div className={styles.topSection}>
         <StandingsSection
           standings={standings}
           period={standingPeriod}
@@ -94,7 +95,7 @@ export default function Home() {
       </div>
 
       {/* 中部：战将数据 */}
-      <div className="content-wrapper">
+      <div className={styles.contentWrapper}>
         <PlayersSection
           players={featuredPlayers}
           playerType={playerType}
@@ -103,36 +104,9 @@ export default function Home() {
       </div>
 
       {/* 下部：精彩回顾 */}
-      <div className="content-wrapper">
+      <div className={styles.contentWrapper}>
         <HighlightsSection videos={MOCK_VIDEOS} />
       </div>
-
-      <style jsx>{`
-        .home-page {
-          padding: clamp(1rem, 5vw, 3rem) 0;
-          background-color: ${colors.background};
-          min-height: 100vh;
-        }
-
-        .top-section {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 2rem;
-          margin-bottom: 2.5rem;
-          padding: 0 clamp(1rem, 3vw, 2rem);
-        }
-
-        .content-wrapper {
-          padding: 0 clamp(1rem, 3vw, 2rem);
-          margin-bottom: 2.5rem;
-        }
-
-        @media (min-width: 768px) {
-          .top-section {
-            grid-template-columns: 1.4fr 1fr;
-          }
-        }
-      `}</style>
     </main>
   );
 }

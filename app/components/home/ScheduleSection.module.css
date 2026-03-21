@@ -1,0 +1,131 @@
+.scheduleSection {
+  background-color: #0b1b3d;
+  border-radius: 24px;
+  padding: 2rem;
+  color: white;
+  box-shadow: 0 15px 50px rgba(11, 27, 61, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  color: #fcce00;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.gamesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.gameCard {
+  background: linear-gradient(135deg, #0b1b3d 0%, rgba(15, 40, 80, 0.3) 100%);
+  border-radius: 20px;
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.gameCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(252, 207, 0, 0.2);
+}
+
+.bgLogo {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.bgLogoLeft {
+  left: -25px;
+  top: -25px;
+  transform: rotate(15deg);
+  filter: grayscale(30%);
+}
+
+.bgLogoRight {
+  right: -25px;
+  bottom: -25px;
+  transform: rotate(-15deg);
+}
+
+.gameInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.gameDate {
+  font-size: 1rem;
+  color: #fcce00;
+  font-weight: 900;
+}
+
+.gameTime {
+  opacity: 0.8;
+}
+
+.gameLocation {
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 3px 10px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #fcce00;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.teamsMatchup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.vsText {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .teamsMatchup {
+    gap: 1.5rem;
+  }
+
+  .bgLogo {
+    width: 120px;
+    height: 120px;
+  }
+}

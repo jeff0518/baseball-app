@@ -1,0 +1,85 @@
+.playersSection {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  color: #0B1B3D;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.typeToggle {
+  display: flex;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.toggleButton {
+  padding: 0.8rem 2.5rem;
+  border-radius: 12px;
+  border: none;
+  background-color: transparent;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.toggleButton.active {
+  background-color: #0B1B3D;
+  color: #FCCF00;
+}
+
+.toggleButton:hover {
+  transform: translateY(-1px);
+}
+
+.toggleButton:focus {
+  outline: 2px solid #FCCF00;
+  outline-offset: 2px;
+}
+
+.playersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .toggleButton {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .playersGrid {
+    grid-template-columns: 1fr;
+  }
+}

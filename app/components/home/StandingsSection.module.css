@@ -1,0 +1,154 @@
+.standingsSection {
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 4px solid #FCCF00;
+  padding-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  color: #0B1B3D;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.tabGroup {
+  display: flex;
+  gap: 0.4rem;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.tabButton {
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  border: none;
+  background-color: transparent;
+  color: #0B1B3D;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.tabButton.active {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabButton:hover {
+  transform: translateY(-1px);
+}
+
+.tabButton:focus {
+  outline: 2px solid #FCCF00;
+  outline-offset: 2px;
+}
+
+.standingsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.standingsTable thead tr {
+  color: #aaa;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.standingsTable th {
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.standingsTable tbody tr {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  border-radius: 15px;
+  transition: all 0.2s;
+}
+
+.standingsTable tbody tr.brothersRow {
+  background: linear-gradient(90deg, #FCCF00 0%, rgba(252, 207, 0, 0.15) 100%);
+  box-shadow: 0 8px 20px rgba(252, 207, 0, 0.3);
+  transform: scale(1.02);
+  z-index: 2;
+  position: relative;
+}
+
+.standingsTable tbody tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.standingsTable td {
+  padding: 0.8rem;
+  text-align: center;
+  color: #0B1B3D;
+}
+
+.standingsTable tbody tr td:first-child {
+  border-radius: 15px 0 0 15px;
+}
+
+.standingsTable tbody tr td:last-child {
+  border-radius: 0 15px 15px 0;
+}
+
+.rankCell {
+  width: 60px;
+}
+
+.teamCell {
+  width: 100px;
+}
+
+.rankNormal {
+  color: #bbb;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.rankHighlight {
+  color: #0B1B3D;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .standingsTable {
+    font-size: 0.85rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+}

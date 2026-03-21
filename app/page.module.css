@@ -1,0 +1,24 @@
+.homePage {
+  padding: clamp(1rem, 5vw, 3rem) 0;
+  background-color: #F8F9FA;
+  min-height: 100vh;
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+.contentWrapper {
+  padding: 0 clamp(1rem, 3vw, 2rem);
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .topSection {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
