@@ -1,32 +1,26 @@
 import { TeamStanding } from '../../../entities';
+import { Team } from '../../../entities';
 import { TeamStandingDTO } from './standings.dto';
 
 export class StandingsMapper {
-  static toDTO(standing: TeamStanding): TeamStandingDTO {
+  static toDTO(standing: TeamStanding, team: Team): TeamStandingDTO {
+    const gamesBehind = standing.gamesBehind || 0;
+    const winRate = standing.winRate || 0;
+    
     return {
       rank: standing.rank,
       teamId: standing.team_id,
-      teamName: standing.team.name,
-      teamLogoUrl: standing.team.logo_url,
-      teamAvatarUrl: standing.team.avatar_url,
+      teamName: team?.name || 'Unknown',
+      teamLogoUrl: team?.logo_url || '',
+      teamAvatarUrl: team?.avatar_url || '',
       wins: standing.wins,
       losses: standing.losses,
       draws: standing.draws,
       gamesPlayed: standing.wins + standing.losses + standing.draws,
-      winRate: this.formatWinRate(standing.winRate),
-      gamesBehind: this.formatGamesBehind(standing.gamesBehind),
-      streak: standing.streak,
+      winRate: `${((winRate || 0) * 100).toFixed(1)}%`,
+      gamesBehind: gamesBehind === Math.floor(gamesBehind) ? gamesBehind.toFixed(0) : gamesBehind.toFixed(1),
+      streak: standing.streak || '',
       scrapedAt: standing.scrapedAt,
     };
-  }
-
-  private static formatWinRate(winRate: number): string {
-    // 0.593 → "59.3%"
-    return `${(winRate * 100).toFixed(1)}%`;
-  }
-
-  private static formatGamesBehind(gamesBehind: number): string {
-    // 0.0 → "0", 4.0 → "4.0"
-    return gamesBehind === Math.floor(gamesBehind) ? gamesBehind.toFixed(0) : gamesBehind.toFixed(1);
   }
 }

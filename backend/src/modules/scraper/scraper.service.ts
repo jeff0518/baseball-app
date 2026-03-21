@@ -148,29 +148,35 @@ export class ScraperService {
     const recordedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     for (const standing of standings) {
-      // 轉換資料類型
       const winRateNum = this.parseWinRate(standing.winRate);
       const gamesBehindNum = this.parseGamesBehind(standing.gamesBehind);
 
-      // 更新或插入 team_standings (當前排名)
-      await this.teamStandingRepository.upsert(
-        {
-          season_id: season.id,
-          team_id: standing.teamCode,
-          rank: standing.rank,
-          wins: standing.wins,
-          losses: standing.losses,
-          draws: standing.draws,
-          winRate: winRateNum,
-          gamesBehind: gamesBehindNum,
-          streak: standing.streak,
-          scrapedAt: now,
-        },
-        {
-          conflictPaths: ['season_id', 'team_id'],
-          skipUpdateIfNoValuesChanged: true,
-        },
-      );
+      const teamStandingData = {
+        season_id: season.id,
+        team_id: standing.teamCode,
+        rank: standing.rank,
+        wins: standing.wins,
+        losses: standing.losses,
+        draws: standing.draws,
+        winRate: winRateNum,
+        gamesBehind: gamesBehindNum,
+        streak: standing.streak,
+        scrapedAt: now,
+      };
+
+      // 檢查是否存在，存在則更新，不存在則插入
+      const existing = await this.teamStandingRepository.findOne({
+        where: { season_id: season.id, team_id: standing.teamCode },
+      });
+
+      if (existing) {
+        await this.teamStandingRepository.update(
+          { season_id: season.id, team_id: standing.teamCode },
+          teamStandingData,
+        );
+      } else {
+        await this.teamStandingRepository.save(teamStandingData);
+      }
 
       // 插入 team_standings_history (歷史記錄)
       await this.teamStandingsHistoryRepository.save({

@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ScraperService } from './scraper.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TeamStanding, TeamStandingsHistory } from '../../entities';
+import { TeamStanding, TeamStandingsHistory, Team } from '../../entities';
 import { StandingsMapper } from './dto/standings.mapper';
 import { TeamStandingDTO, StandingsResponseDTO } from './dto/standings.dto';
 
@@ -14,27 +14,44 @@ export class ScraperController {
     private teamStandingRepository: Repository<TeamStanding>,
     @InjectRepository(TeamStandingsHistory)
     private teamStandingsHistoryRepository: Repository<TeamStandingsHistory>,
+    @InjectRepository(Team)
+    private teamRepository: Repository<Team>,
   ) {}
 
   @Get('current')
-  async getCurrentStandings(): Promise<StandingsResponseDTO> {
-    const standings = await this.teamStandingRepository.find({
-      relations: ['team', 'season'],
-      order: { rank: 'ASC' },
-    });
+  async getCurrentStandings(): Promise<any> {
+    try {
+      const standings = await this.teamStandingRepository.find({
+        order: { rank: 'ASC' },
+      });
+      
+      const teams = await this.teamRepository.find();
 
-    return {
-      data: standings.map((s) => StandingsMapper.toDTO(s)),
-      timestamp: new Date(),
-      season: 'CPBL-2025',
-    };
+      return {
+        data: standings.map((s) => ({
+          rank: s.rank,
+          teamId: s.team_id,
+          teamName: teams.find((t) => t.id === s.team_id)?.name || 'Unknown',
+          wins: s.wins,
+          losses: s.losses,
+          draws: s.draws,
+          winRate: `${(Number(s.winRate) * 100).toFixed(1)}%`,
+          gamesBehind: Number(s.gamesBehind).toFixed(1),
+          streak: s.streak,
+        })),
+        timestamp: new Date(),
+        season: 'CPBL-2025',
+      };
+    } catch (error) {
+      console.error('Error in getCurrentStandings:', error);
+      throw error;
+    }
   }
 
   @Get('history')
   async getStandingsHistory(@Query('teamId') teamId?: string, @Query('limit') limit = 30) {
     const query = this.teamStandingsHistoryRepository
       .createQueryBuilder('h')
-      .leftJoinAndSelect('h.team', 'team')
       .orderBy('h.recorded_date', 'DESC')
       .addOrderBy('h.rank', 'ASC')
       .limit(parseInt(limit as any) || 30);
@@ -45,11 +62,18 @@ export class ScraperController {
 
     const history = await query.getMany();
 
+    // 查詢隊伍信息
+    const teamIds = [...new Set(history.map((h) => h.team_id))];
+    const teams = await this.teamRepository.find({
+      where: { id: teamIds } as any,
+    });
+    const teamMap = new Map(teams.map((t) => [t.id, t]));
+
     return {
       data: history.map((h) => ({
         rank: h.rank,
         teamId: h.team_id,
-        teamName: h.team.name,
+        teamName: teamMap.get(h.team_id)?.name || h.team_id,
         wins: h.wins,
         losses: h.losses,
         draws: h.draws,

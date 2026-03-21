@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { BatterStats, PitcherStats, GameRecord } from '../entities';
+import { BatterStats, PitcherStats, GameRecord } from '../../entities';
 
 @Injectable()
 export class MockDataService {

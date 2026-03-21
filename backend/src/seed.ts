@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DataSource } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { Team, Season } from './entities';
 
 async function seed() {
   const app = await NestFactory.create(AppModule);
-  const dataSource = app.get(DataSource);
 
   try {
     console.log('🌱 Starting seed...');
+    const connection = getConnection();
 
     // 建立 teams
     const teams = [
@@ -51,7 +51,7 @@ async function seed() {
     ];
 
     console.log('📝 Inserting teams...');
-    const teamRepository = dataSource.getRepository(Team);
+    const teamRepository = connection.getRepository(Team);
     await teamRepository.save(teams);
     console.log('✅ Teams created:', teams.map((t) => t.id).join(', '));
 
@@ -65,7 +65,7 @@ async function seed() {
     };
 
     console.log('📝 Inserting season...');
-    const seasonRepository = dataSource.getRepository(Season);
+    const seasonRepository = connection.getRepository(Season);
     await seasonRepository.save(season);
     console.log('✅ Season created: CPBL-2025');
 
