@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { FaYoutube } from 'react-icons/fa';
 import { MdPlayArrow } from 'react-icons/md';
 import { colors } from '@/app/lib/design-tokens';
@@ -39,10 +40,12 @@ export function HighlightsSection({ videos }: HighlightsSectionProps) {
             className="video-card"
           >
             <div className="thumbnail-container">
-              <img 
+              <Image 
                 src={video.thumbnail} 
                 alt={video.title} 
                 className="thumbnail"
+                fill
+                style={{ objectFit: 'cover' }}
               />
               <div className="play-button">
                 <MdPlayArrow size="1.5rem" />

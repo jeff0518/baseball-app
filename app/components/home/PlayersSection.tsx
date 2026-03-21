@@ -3,10 +3,11 @@
 import { FaFire } from 'react-icons/fa';
 import { MdAnalytics } from 'react-icons/md';
 import { colors } from '@/app/lib/design-tokens';
+import { Player } from '@/app/lib/api';
 import { PlayerCard } from '@/app/components/players/PlayerCard';
 
 interface PlayersSectionProps {
-  players: any[];
+  players: Player[];
   playerType: 'batter' | 'pitcher';
   onTypeChange: (type: 'batter' | 'pitcher') => void;
 }
@@ -39,7 +40,7 @@ export function PlayersSection({ players, playerType, onTypeChange }: PlayersSec
       {/* 球员卡片 */}
       <div className="players-grid">
         {players.map((player) => (
-          <PlayerCard key={player.playerId} player={player} type={playerType} />
+          <PlayerCard key={player.playerId} player={player} />
         ))}
       </div>
 

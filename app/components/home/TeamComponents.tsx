@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { colors } from '@/app/lib/design-tokens';
 import { getTeamInfo } from '@/app/lib/teams';
 
@@ -31,13 +32,15 @@ export function TeamLogoOnly({
       border: `2px solid ${info.primaryColor}55`,
       boxShadow: shadow ? '0 4px 10px rgba(0,0,0,0.1)' : 'none',
       zIndex: 2,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      position: 'relative'
     }}>
       {info.avatarUrl && !imgError ? (
-        <img 
+        <Image 
           src={info.avatarUrl} 
           alt={team} 
-          style={{ width: '85%', height: '85%', objectFit: 'contain' }} 
+          fill
+          style={{ objectFit: 'contain' }} 
           onError={() => setImgError(true)}
         />
       ) : (
@@ -59,7 +62,6 @@ export function TeamBadge({
   size?: string; 
   showLabel?: boolean;
 }) {
-  const info = getTeamInfo(team);
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem' }}>
       <TeamLogoOnly team={team} size="44px" shadow={false} />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { playerApi, BatterStats } from '@/app/lib/api';
 import { colors, spacing } from '@/app/lib/design-tokens';
 import { PlayerCard } from '@/app/components/players/PlayerCard';
@@ -31,7 +31,7 @@ export default function SearchPage() {
     try {
       const response = await playerApi.searchPlayers(keyword, page, itemsPerPage);
       if (response.data) {
-        let sortedData = [...response.data];
+        const sortedData = [...response.data];
 
         switch (sortBy) {
           case 'hr':
@@ -41,7 +41,6 @@ export default function SearchPage() {
             sortedData.sort((a, b) => b.RBI - a.RBI);
             break;
           case 'avg':
-            const avgA = sortedData.length > 0 ? response.data[0].AB > 0 ? response.data[0].H / response.data[0].AB : 0 : 0;
             sortedData.sort((a, b) => {
               const avgAVal = a.AB > 0 ? a.H / a.AB : 0;
               const avgBVal = b.AB > 0 ? b.H / b.AB : 0;

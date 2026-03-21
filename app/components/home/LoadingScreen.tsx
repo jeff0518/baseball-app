@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { GiElephant } from 'react-icons/gi';
 import { colors } from '@/app/lib/design-tokens';
 
@@ -16,10 +17,12 @@ export function LoadingScreen({ progress }: LoadingScreenProps) {
       {/* Logo 动画 */}
       <div className="logo-container">
         {!logoError ? (
-          <img 
+          <Image 
             src="/derek-logo.png" 
             alt="Loading" 
             className="logo-image"
+            width={140}
+            height={140}
             onError={() => setLogoError(true)} 
           />
         ) : (

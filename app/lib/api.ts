@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export interface BatterStats {
   playerId: string;
@@ -60,6 +60,8 @@ export interface GameSchedule {
   location: string;
   isHome: boolean;
 }
+
+export type Player = BatterStats | PitcherStats;
 
 export interface ApiResponse<T> {
   data?: T;
@@ -236,7 +238,7 @@ export const playerApi = {
     return MOCK_GAMES;
   },
 
-  getFeaturedPlayers: async (type: 'batter' | 'pitcher' = 'batter'): Promise<any[]> => {
+  getFeaturedPlayers: async (type: 'batter' | 'pitcher' = 'batter'): Promise<Player[]> => {
     await new Promise(resolve => setTimeout(resolve, 300));
     return type === 'batter' ? MOCK_BATTERS : MOCK_PITCHERS;
   },

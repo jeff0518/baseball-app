@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { playerApi, Standing, GameSchedule } from "./lib/api";
+import { playerApi, Standing, GameSchedule, Player } from "./lib/api";
 import { colors } from "./lib/design-tokens";
 import { LoadingScreen } from "./components/home/LoadingScreen";
 import { StandingsSection } from "./components/home/StandingsSection";
@@ -41,7 +41,7 @@ export default function Home() {
   const [standings, setStandings] = useState<Standing[]>([]);
   const [standingPeriod, setStandingPeriod] = useState("full");
   const [games, setGames] = useState<GameSchedule[]>([]);
-  const [featuredPlayers, setFeaturedPlayers] = useState<any[]>([]);
+  const [featuredPlayers, setFeaturedPlayers] = useState<Player[]>([]);
   const [playerType, setPlayerType] = useState<"batter" | "pitcher">("batter");
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);

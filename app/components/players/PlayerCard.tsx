@@ -1,22 +1,25 @@
 'use client';
 
 import { colors, spacing } from '@/app/lib/design-tokens';
+import { Player, PitcherStats } from '@/app/lib/api';
 
 interface PlayerCardProps {
-  player: any; // 支援多種數據格式
-  type?: 'batter' | 'pitcher';
+  player: Player;
   onClick?: () => void;
 }
 
-export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps) {
-  const isPitcher = type === 'pitcher';
+function isPitcher(player: Player): player is PitcherStats {
+  return 'ERA' in player;
+}
+
+export function PlayerCard({ player, onClick }: PlayerCardProps) {
 
   return (
     <div
       onClick={onClick}
       style={{
         backgroundColor: colors.white,
-        border: `2px solid ${isPitcher ? colors.pitcher.light : colors.batter.light}`,
+        border: `2px solid ${isPitcher(player) ? colors.pitcher.light : colors.batter.light}`,
         borderRadius: '16px',
         padding: spacing.lg,
         cursor: onClick ? 'pointer' : 'default',
@@ -51,9 +54,9 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
         opacity: 0.05,
         fontStyle: 'italic',
         fontWeight: 'black',
-        color: isPitcher ? colors.pitcher.main : colors.batter.main
+        color: isPitcher(player) ? colors.pitcher.main : colors.batter.main
       }}>
-        {isPitcher ? 'PITCHER' : 'BATTER'}
+        {isPitcher(player) ? 'PITCHER' : 'BATTER'}
       </div>
 
       <div style={{ marginBottom: spacing.md, position: 'relative' }}>
@@ -62,8 +65,8 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
             {player.playerName}
           </h3>
           <span style={{ 
-            backgroundColor: isPitcher ? colors.pitcher.main : colors.batter.main,
-            color: isPitcher ? colors.white : colors.secondary.DEFAULT,
+            backgroundColor: isPitcher(player) ? colors.pitcher.main : colors.batter.main,
+            color: isPitcher(player) ? colors.white : colors.secondary.DEFAULT,
             padding: '4px 12px',
             borderRadius: '20px',
             fontSize: '0.9rem',
@@ -77,7 +80,7 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
 
       {/* 核心數據區 (根據角色不同顯示不同數據) */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', marginBottom: '1.5rem', position: 'relative' }}>
-        {isPitcher ? (
+        {isPitcher(player) ? (
           <>
             <StatItem label="勝-敗" value={`${player.W}-${player.L}`} />
             <StatItem label="救援" value={player.SV} />
@@ -103,7 +106,7 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
         paddingTop: '1rem',
         position: 'relative'
       }}>
-        {isPitcher ? (
+        {isPitcher(player) ? (
           <>
             <StatBoxSmall label="ERA" value={player.ERA.toFixed(2)} color="#e63946" />
             <StatBoxSmall label="WHIP" value={player.WHIP.toFixed(2)} color="#457b9d" />

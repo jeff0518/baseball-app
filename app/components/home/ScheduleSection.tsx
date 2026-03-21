@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { MdCalendarMonth, MdLocationOn } from 'react-icons/md';
 import { colors } from '@/app/lib/design-tokens';
 import { GameSchedule } from '@/app/lib/api';
@@ -27,17 +28,21 @@ export function ScheduleSection({ games }: ScheduleSectionProps) {
             <div key={game.id} className="game-card">
               {/* 背景装饰 */}
               {brothersInfo.officialLogoUrl && (
-                <img 
+                <Image 
                   src={brothersInfo.officialLogoUrl} 
                   alt="" 
                   className="bg-logo bg-logo-left"
+                  fill
+                  style={{ objectFit: 'cover' }}
                 />
               )}
               {opponentInfo.officialLogoUrl && (
-                <img 
+                <Image 
                   src={opponentInfo.officialLogoUrl} 
                   alt="" 
                   className="bg-logo bg-logo-right"
+                  fill
+                  style={{ objectFit: 'cover' }}
                 />
               )}
 

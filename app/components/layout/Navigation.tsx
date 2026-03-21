@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { colors } from '@/app/lib/design-tokens';
 import { getTeamInfo } from '@/app/lib/teams';
 
@@ -44,11 +45,12 @@ export function Navigation() {
           }}
         >
           {/* 使用中信兄弟官方圖片 Logo */}
-          <div style={{ width: '45px', height: '45px', overflow: 'hidden', borderRadius: '50%', backgroundColor: colors.white, padding: '3px' }}>
-            <img 
+          <div style={{ width: '45px', height: '45px', overflow: 'hidden', borderRadius: '50%', backgroundColor: colors.white, padding: '3px', position: 'relative' }}>
+            <Image 
               src={brothers.officialLogoUrl} 
-              alt="Baseball App Logo - 中信兄弟" 
-              style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+              alt="Baseball App Logo - 中信兄弟"
+              fill
+              style={{ objectFit: 'contain' }}
             />
           </div>
           <span>象迷視角</span>
