@@ -1,16 +1,16 @@
 /**
- * 中職各隊資產管理中心
- * 如果你想更換球隊的圖示 (Icon) 或圖片 (Logo)，請在此檔案修改。
+ * 中職各隊資產管理中心 - 使用本地 public 資料夾下的圖片
  */
 
 export interface TeamInfo {
   id: string;
   name: string;
   shortName: string;
-  icon: string;         // 目前使用 Emoji，未來可替換為圖片路徑
-  logoUrl?: string;     // 預留給真正的圖片路徑，例如 '/images/logos/brothers.png'
-  primaryColor: string; // 球隊主色
-  secondaryColor: string; // 球隊副色
+  icon: string;             // 備用 Emoji
+  avatarUrl: string;        // 小頭像路徑 (/team_avatar/...)
+  officialLogoUrl: string;  // 背景大 Logo 路徑 (/team_official/...)
+  primaryColor: string; 
+  secondaryColor: string;
 }
 
 export const TEAMS: Record<string, TeamInfo> = {
@@ -19,7 +19,9 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '中信兄弟',
     shortName: '兄弟',
     icon: '🐘',
-    primaryColor: '#FFD700',
+    avatarUrl: '/team_avatar/caplogo-bothers.png', // 檔名照你資料夾裡的寫法
+    officialLogoUrl: '/team_official/brothers_logo.png',
+    primaryColor: '#FCCF00',
     secondaryColor: '#002D62',
   },
   '統一獅': {
@@ -27,6 +29,8 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '統一獅',
     shortName: '統一',
     icon: '🦁',
+    avatarUrl: '/team_avatar/caplogo-unil.png',
+    officialLogoUrl: '/team_official/unil_logo.png',
     primaryColor: '#FF8C00',
     secondaryColor: '#000000',
   },
@@ -35,6 +39,8 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '樂天桃猿',
     shortName: '樂天',
     icon: '🐵',
+    avatarUrl: '/team_avatar/caplogo-rakuten.png',
+    officialLogoUrl: '/team_official/rakuten_logo.png',
     primaryColor: '#8B0000',
     secondaryColor: '#FFFFFF',
   },
@@ -43,6 +49,8 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '味全龍',
     shortName: '味全',
     icon: '🐲',
+    avatarUrl: '/team_avatar/caplogo-dragon.png',
+    officialLogoUrl: '/team_official/dragon_logo.png',
     primaryColor: '#ED1C24',
     secondaryColor: '#FFFFFF',
   },
@@ -51,6 +59,8 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '富邦悍將',
     shortName: '富邦',
     icon: '🛡️',
+    avatarUrl: '/team_avatar/caplogo-fubon.png',
+    officialLogoUrl: '/team_official/fubon_logo.png',
     primaryColor: '#004A9C',
     secondaryColor: '#FFFFFF',
   },
@@ -59,20 +69,21 @@ export const TEAMS: Record<string, TeamInfo> = {
     name: '台鋼雄鷹',
     shortName: '台鋼',
     icon: '🦅',
+    avatarUrl: '/team_avatar/caplogo-hawks.png',
+    officialLogoUrl: '/team_official/hawks_logo.png',
     primaryColor: '#006400',
     secondaryColor: '#FFFFFF',
   },
 };
 
-/**
- * 根據球隊名稱獲取球隊資訊的輔助函數
- */
 export const getTeamInfo = (teamName: string): TeamInfo => {
   return TEAMS[teamName] || {
     id: 'unknown',
     name: teamName,
     shortName: teamName,
     icon: '⚾',
+    avatarUrl: '',
+    officialLogoUrl: '',
     primaryColor: '#cccccc',
     secondaryColor: '#333333',
   };
