@@ -6,25 +6,70 @@ import { colors } from './lib/design-tokens';
 import { getTeamInfo } from './lib/teams';
 import { PlayerCard } from './components/players/PlayerCard';
 
-function TeamBadge({ team, size = '1.2rem' }: { team: string; size?: string }) {
+/**
+ * 專業隊徽元件 - 使用本地 team_avatar 路徑
+ */
+function TeamLogoOnly({ team, size = '40px', shadow = true }: { team: string; size?: string; shadow?: boolean }) {
   const info = getTeamInfo(team);
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-      <span style={{ 
-        fontSize: size, 
-        backgroundColor: `${info.primaryColor}22`, 
-        padding: '4px', 
-        borderRadius: '50%',
-        width: '32px',
-        height: '32px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        border: `1px solid ${info.primaryColor}44`
-      }}>
-        {info.icon}
-      </span>
-      <span>{team}</span>
+    <div style={{ 
+      backgroundColor: colors.white, 
+      borderRadius: '50%',
+      width: size,
+      height: size,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      border: `2px solid ${info.primaryColor}55`,
+      boxShadow: shadow ? '0 4px 10px rgba(0,0,0,0.1)' : 'none',
+      zIndex: 2,
+      overflow: 'hidden'
+    }}>
+      {info.avatarUrl ? (
+        <img src={info.avatarUrl} alt={team} style={{ width: '85%', height: '85%', objectFit: 'contain' }} />
+      ) : (
+        <span style={{ fontSize: `calc(${size} * 0.5)` }}>{info.icon}</span>
+      )}
+    </div>
+  );
+}
+
+function TeamBadge({ team, size = '1.2rem', showLabel = true }: { team: string; size?: string; showLabel?: boolean }) {
+  const info = getTeamInfo(team);
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.8rem' }}>
+      <TeamLogoOnly team={team} size="44px" shadow={false} />
+      {showLabel && <span style={{ fontWeight: '900', fontSize: size }}>{team}</span>}
+    </span>
+  );
+}
+
+/**
+ * 國際化格式的近況標籤 (W/L 標記法)
+ */
+function StreakBadge({ streak }: { streak: string }) {
+  const isWin = streak.includes('勝');
+  const count = streak.match(/\d+/)?.[0] || '1';
+  const displayLabel = isWin ? `W${count}` : `L${count}`;
+  
+  // 勝場用紅色，敗場改用綠色
+  const color = isWin ? '#e63946' : '#10B981';
+  
+  return (
+    <span style={{ 
+      backgroundColor: `${color}15`,
+      color: color,
+      padding: '4px 14px',
+      borderRadius: '20px',
+      fontSize: '0.85rem',
+      fontWeight: '900',
+      border: `1.5px solid ${color}33`,
+      display: 'inline-block',
+      minWidth: '60px',
+      textAlign: 'center',
+      letterSpacing: '1px'
+    }}>
+      {displayLabel}
     </span>
   );
 }
@@ -68,6 +113,13 @@ export default function Home() {
     { id: 'second', label: '下半季' },
   ];
 
+  const mockVideos = [
+    { id: 'NEXrXUiPbUE', title: '【2026】 這不是你想的小紅帽！中信兄弟菜鳥日話劇表演角色抽籤大亂鬥...', thumbnail: 'https://img.youtube.com/vi/NEXrXUiPbUE/hqdefault.jpg' },
+    { id: 'v1', title: '【2026】 蠟筆小新？哆啦A夢？兄弟們夢想成為哪個角色呢？', thumbnail: 'https://img.youtube.com/vi/v_p68jU-U-Q/hqdefault.jpg' },
+    { id: 'v2', title: '【2026】 WBC中華隊左營開訓！鄭浩均當兵漏接通知、江坤宇與卡仔相見...', thumbnail: 'https://img.youtube.com/vi/8o7T8YyR4W8/hqdefault.jpg' },
+    { id: 'v3', title: '【2026】 三小象Driveline心得分享，巧遇Carroll訓練：這就是大聯盟的節奏', thumbnail: 'https://img.youtube.com/vi/h2L69kE9Dfk/hqdefault.jpg' },
+  ];
+
   if (loading) {
     return (
       <div style={{ 
@@ -78,7 +130,11 @@ export default function Home() {
         alignItems: 'center',
         gap: '2rem'
       }}>
-        <div style={{ fontSize: '4rem', animation: 'bounce 1s infinite' }}>⚾</div>
+        <div style={{ width: '120px', height: '120px', animation: 'bounce 1s infinite' }}>
+          <img src="/derek-logo.png" alt="Loading" style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+          <div style={{ fontSize: '4rem', textAlign: 'center' }}>⚾</div>
+        </div>
         <div style={{ width: '300px', height: '12px', backgroundColor: '#eee', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
           <div style={{ 
             width: `${progress}%`, 
@@ -93,8 +149,8 @@ export default function Home() {
         </div>
         <style jsx global>{`
           @keyframes bounce {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+            50% { transform: translateY(-20px) scale(1.1) rotate(180deg); }
           }
         `}</style>
       </div>
@@ -102,31 +158,32 @@ export default function Home() {
   }
 
   return (
-    <main style={{ padding: '2rem 3rem', maxWidth: '1600px', margin: '0 auto', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
+    <main style={{ padding: '2rem 3rem', maxWidth: '1700px', margin: '0 auto', backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+      {/* 頂部資訊：戰績與賽程 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem', alignItems: 'stretch' }}>
         
-        {/* 各隊戰績 */}
-        <section style={{ backgroundColor: colors.white, borderRadius: '16px', padding: '1.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `3px solid ${colors.primary}`, paddingBottom: '0.8rem' }}>
-            <h2 style={{ fontSize: '1.4rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ fontSize: '1.6rem' }}>📈</span> 戰情排名
+        {/* 聯賽排名 */}
+        <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `4px solid ${colors.primary}`, paddingBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <span style={{ fontSize: '2rem' }}>🏆</span> 聯賽排名
             </h2>
-            <div style={{ display: 'flex', gap: '0.3rem', backgroundColor: '#f0f0f0', padding: '4px', borderRadius: '12px' }}>
+            <div style={{ display: 'flex', gap: '0.4rem', backgroundColor: '#f0f0f0', padding: '5px', borderRadius: '15px' }}>
               {standingTabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setStandingPeriod(tab.id)}
                   style={{
-                    padding: '0.5rem 1.2rem',
-                    borderRadius: '8px',
+                    padding: '0.6rem 1.4rem',
+                    borderRadius: '10px',
                     border: 'none',
                     backgroundColor: standingPeriod === tab.id ? colors.white : 'transparent',
                     color: colors.secondary,
-                    boxShadow: standingPeriod === tab.id ? '0 2px 4px rgba(0,0,0,0.1)' : 'none',
+                    boxShadow: standingPeriod === tab.id ? '0 4px 8px rgba(0,0,0,0.1)' : 'none',
                     cursor: 'pointer',
                     fontWeight: 'bold',
-                    fontSize: '0.85rem',
+                    fontSize: '0.9rem',
                     transition: 'all 0.2s'
                   }}
                 >
@@ -136,149 +193,134 @@ export default function Home() {
             </div>
           </div>
           
-          <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px', textAlign: 'left' }}>
+          <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
             <thead>
-              <tr style={{ color: '#888', fontSize: '0.85rem' }}>
-                <th style={{ padding: '0.5rem 1rem' }}>排名 / 球隊</th>
-                <th style={{ padding: '0.5rem' }}>已賽</th>
-                <th style={{ padding: '0.5rem' }}>勝-敗-和</th>
-                <th style={{ padding: '0.5rem' }}>勝率</th>
-                <th style={{ padding: '0.5rem' }}>勝差</th>
-                <th style={{ padding: '0.5rem' }}>近況</th>
+              <tr style={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <th style={{ padding: '0.5rem', textAlign: 'center', width: '60px' }}>排名</th>
+                <th style={{ padding: '0.5rem', textAlign: 'center', width: '100px' }}>球隊</th>
+                <th style={{ padding: '0.5rem', textAlign: 'center' }}>勝-敗-和</th>
+                <th style={{ padding: '0.5rem', textAlign: 'center' }}>勝率</th>
+                <th style={{ padding: '0.5rem', textAlign: 'center' }}>勝差</th>
+                <th style={{ padding: '0.5rem', textAlign: 'center' }}>近況</th>
               </tr>
             </thead>
             <tbody>
-              {standings.map((team, index) => (
-                <tr 
-                  key={team.team} 
-                  style={{ 
-                    backgroundColor: team.team === '中信兄弟' ? `${colors.primary}15` : '#fff',
-                    transition: 'transform 0.2s',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.02)'
-                  }}
-                >
-                  <td style={{ padding: '0.8rem 1rem', borderRadius: '10px 0 0 10px', fontWeight: 'bold' }}>
-                    <span style={{ marginRight: '1rem', color: '#aaa', fontSize: '0.8rem' }}>{index + 1}</span>
-                    <TeamBadge team={team.team} />
-                  </td>
-                  <td style={{ padding: '0.8rem 0.5rem' }}>{team.played}</td>
-                  <td style={{ padding: '0.8rem 0.5rem' }}>{team.won}-{team.lost}-{team.drawn}</td>
-                  <td style={{ padding: '0.8rem 0.5rem', fontWeight: 'bold' }}>{team.winRate.toFixed(3)}</td>
-                  <td style={{ padding: '0.8rem 0.5rem' }}>{team.gamesBehind}</td>
-                  <td style={{ padding: '0.8rem 1rem', borderRadius: '0 10px 10px 0' }}>
-                    <span style={{ 
-                      backgroundColor: team.streak.includes('勝') ? '#ff4d4f22' : '#1890ff22',
-                      color: team.streak.includes('勝') ? '#cf1322' : '#096dd9',
-                      padding: '2px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      fontWeight: 'bold'
-                    }}>
-                      {team.streak}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {standings.map((team, index) => {
+                const isBrothers = team.team === '中信兄弟';
+                return (
+                  <tr 
+                    key={team.team} 
+                    style={{ 
+                      background: isBrothers 
+                        ? 'linear-gradient(90deg, #FCCF00 0%, #FFF9E0 100%)' 
+                        : '#fff',
+                      boxShadow: isBrothers ? '0 8px 20px rgba(252, 207, 0, 0.3)' : '0 2px 4px rgba(0,0,0,0.02)',
+                      transform: isBrothers ? 'scale(1.02)' : 'scale(1)',
+                      zIndex: isBrothers ? 2 : 1,
+                      position: 'relative',
+                      borderRadius: '15px'
+                    }}
+                  >
+                    <td style={{ padding: '0.8rem', textAlign: 'center', borderRadius: '15px 0 0 15px' }}>
+                      <span style={{ 
+                        color: isBrothers ? colors.secondary : '#bbb', 
+                        fontSize: isBrothers ? '1.4rem' : '1.1rem',
+                        fontWeight: '900'
+                      }}>
+                        {index + 1}
+                      </span>
+                    </td>
+                    <td style={{ padding: '0.8rem', textAlign: 'center' }}>
+                      <TeamBadge team={team.team} showLabel={false} />
+                    </td>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary }}>
+                      {team.won}-{team.lost}-{team.drawn}
+                    </td>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: 'bold', color: colors.secondary }}>
+                      {team.winRate.toFixed(3)}
+                    </td>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary }}>
+                      {team.gamesBehind}
+                    </td>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', borderRadius: '0 15px 15px 0' }}>
+                      <StreakBadge streak={team.streak} />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </section>
 
-        {/* 右側欄：賽程 + YouTube 直播/訪問 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-          {/* 近期賽程 */}
-          <section style={{ backgroundColor: colors.secondary, borderRadius: '16px', padding: '1.5rem', color: colors.white, boxShadow: '0 10px 40px rgba(11,27,61,0.2)' }}>
-            <h2 style={{ fontSize: '1.4rem', color: colors.primary, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span>📅</span> 下三場預告
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              {games.map((game) => {
-                const teamInfo = getTeamInfo(game.opponent);
-                return (
-                  <div key={game.id} style={{ 
-                    backgroundColor: 'rgba(255,255,255,0.08)', 
-                    borderRadius: '12px', 
-                    padding: '1.2rem', 
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                  }}>
-                    <div style={{ position: 'absolute', right: '-10px', top: '-10px', fontSize: '4rem', opacity: 0.1 }}>
-                      {teamInfo.icon}
+        {/* 近期賽程 */}
+        <section style={{ backgroundColor: colors.secondary, borderRadius: '24px', padding: '2rem', color: colors.white, boxShadow: '0 15px 50px rgba(11,27,61,0.25)', display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ fontSize: '1.6rem', color: colors.primary, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <span>📅</span> 近期賽程
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+            {games.map((game) => {
+              const brothersInfo = getTeamInfo('中信兄弟');
+              const opponentInfo = getTeamInfo(game.opponent);
+              return (
+                <div key={game.id} style={{ 
+                  background: `linear-gradient(135deg, ${colors.secondary} 0%, ${opponentInfo.primaryColor}33 100%)`, 
+                  borderRadius: '20px', 
+                  padding: '1.2rem', 
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
+                }}>
+                  {/* 對角 Logo 背景裝飾 */}
+                  {brothersInfo.officialLogoUrl && (
+                    <img src={brothersInfo.officialLogoUrl} alt="" style={{ position: 'absolute', left: '-25px', top: '-25px', width: '180px', height: '180px', opacity: 0.15, zIndex: 0, transform: 'rotate(15deg)', filter: 'grayscale(30%)' }} />
+                  )}
+                  {opponentInfo.officialLogoUrl && (
+                    <img src={opponentInfo.officialLogoUrl} alt="" style={{ position: 'absolute', right: '-25px', bottom: '-25px', width: '180px', height: '180px', opacity: 0.18, zIndex: 0, transform: 'rotate(-15deg)' }} />
+                  )}
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
+                    <div style={{ fontSize: '1rem', color: colors.primary, fontWeight: '900' }}>
+                      {game.date} · <span style={{ opacity: 0.8 }}>{game.time}</span>
                     </div>
-                    <div style={{ fontSize: '0.85rem', color: colors.primary, fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                      {game.date} · {game.time}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>VS</div>
-                        <TeamBadge team={game.opponent} size="1.4rem" />
-                      </div>
-                    </div>
-                    <div style={{ marginTop: '0.8rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#aaa' }}>
-                      <span>📍 {game.location}</span>
-                      <span style={{ color: game.isHome ? colors.primary : '#fff' }}>
-                        {game.isHome ? '🏠 洲際主場' : '🚌 遠征客場'}
-                      </span>
+                    <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', padding: '3px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: colors.primary, fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <span>📍</span> {game.location}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </section>
 
-          {/* YouTube 嵌入區塊 */}
-          <section style={{ backgroundColor: colors.white, borderRadius: '16px', padding: '1.2rem', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
-            <h2 style={{ fontSize: '1.2rem', color: colors.secondary, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ color: '#ff0000' }}>📺</span> 兄弟最新訪問
-            </h2>
-            <div style={{ 
-              width: '100%', 
-              aspectRatio: '16/9', 
-              backgroundColor: '#000', 
-              borderRadius: '12px', 
-              overflow: 'hidden',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/videoseries?list=PL_Xq989f_VnOInlM6G7i7W6zY8EunG8Hh"
-                title="CTBC Brothers Latest Videos"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div style={{ marginTop: '0.8rem', textAlign: 'right' }}>
-              <a 
-                href="https://www.youtube.com/@CTBCBrothersOfficial/videos" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ fontSize: '0.8rem', color: '#ff0000', fontWeight: 'bold', textDecoration: 'none' }}
-              >
-                前往官方頻道 →
-              </a>
-            </div>
-          </section>
-        </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2.5rem', position: 'relative', zIndex: 1 }}>
+                    <TeamLogoOnly team="中信兄弟" size="65px" />
+                    <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'rgba(255,255,255,0.3)', fontStyle: 'italic' }}>VS</div>
+                    <TeamLogoOnly team={game.opponent} size="65px" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
       </div>
 
-      <section style={{ backgroundColor: colors.white, borderRadius: '16px', padding: '1.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+      {/* 戰將數據 */}
+      <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.4rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '1.6rem' }}>🔥</span> 焦點球員
+          <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <span style={{ fontSize: '2rem' }}>🔥</span> 戰將數據
           </h2>
-          <div style={{ display: 'flex', backgroundColor: '#f0f0f0', borderRadius: '12px', padding: '4px' }}>
+          <div style={{ display: 'flex', backgroundColor: '#f0f0f0', borderRadius: '15px', padding: '5px' }}>
             <button
               onClick={() => setPlayerType('batter')}
               style={{
-                padding: '0.6rem 2rem',
-                borderRadius: '10px',
+                padding: '0.8rem 2.5rem',
+                borderRadius: '12px',
                 border: 'none',
                 backgroundColor: playerType === 'batter' ? colors.secondary : 'transparent',
                 color: playerType === 'batter' ? colors.primary : '#666',
                 cursor: 'pointer',
                 fontWeight: 'bold',
+                fontSize: '1rem',
                 transition: 'all 0.2s'
               }}
             >
@@ -287,13 +329,14 @@ export default function Home() {
             <button
               onClick={() => setPlayerType('pitcher')}
               style={{
-                padding: '0.6rem 2rem',
-                borderRadius: '10px',
+                padding: '0.8rem 2.5rem',
+                borderRadius: '12px',
                 border: 'none',
                 backgroundColor: playerType === 'pitcher' ? colors.secondary : 'transparent',
                 color: playerType === 'pitcher' ? colors.primary : '#666',
                 cursor: 'pointer',
                 fontWeight: 'bold',
+                fontSize: '1rem',
                 transition: 'all 0.2s'
               }}
             >
@@ -302,9 +345,77 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '2rem' }}>
           {featuredPlayers.map((player) => (
-            <PlayerCard key={player.playerId} player={player} />
+            <PlayerCard key={player.playerId} player={player} type={playerType} />
+          ))}
+        </div>
+      </section>
+
+      {/* 影片藝廊 */}
+      <section style={{ paddingBottom: '4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+          <span style={{ color: colors.primary, fontWeight: 'bold', fontSize: '1rem', textTransform: 'uppercase' }}>Video</span>
+          <h2 style={{ fontSize: '1.8rem', color: colors.secondary, margin: 0 }}>【爪嗨賴】▸ 全部播放</h2>
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
+          {mockVideos.map((video) => (
+            <a 
+              key={video.id} 
+              href={`https://www.youtube.com/watch?v=${video.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none', transition: 'transform 0.2s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.03)')}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+            >
+              <div style={{ 
+                backgroundColor: colors.primary, 
+                borderRadius: '8px', 
+                overflow: 'hidden', 
+                boxShadow: '0 4px 15px rgba(0,0,0,0.1)' 
+              }}>
+                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9' }}>
+                  <img 
+                    src={video.thumbnail} 
+                    alt={video.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'rgba(255,0,0,0.9)',
+                    width: '50px',
+                    height: '35px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    color: 'white',
+                    fontSize: '1.2rem'
+                  }}>
+                    ▶
+                  </div>
+                </div>
+                <div style={{ 
+                  padding: '1rem', 
+                  height: '80px', 
+                  fontSize: '0.9rem', 
+                  color: colors.secondary, 
+                  fontWeight: 'bold',
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  lineHeight: '1.4'
+                }}>
+                  {video.title}
+                </div>
+              </div>
+            </a>
           ))}
         </div>
       </section>
