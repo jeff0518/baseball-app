@@ -16,16 +16,19 @@ export function Navigation() {
       }}
     >
       <Link href="/">
-        <div
-          style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: colors.primary,
-            cursor: 'pointer',
-          }}
-        >
-          ⚾ Baseball Stats
-        </div>
+          <div
+            style={{
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              color: colors.primary,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
+          >
+            <span style={{ color: colors.primary }}>🐘</span> 中信兄弟戰情室
+          </div>
       </Link>
 
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
