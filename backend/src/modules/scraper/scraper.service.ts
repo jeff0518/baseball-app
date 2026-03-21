@@ -1,18 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
+import { TeamStanding, TeamStandingsHistory, Season } from '../../entities';
 
-export interface TeamStanding {
+export interface TeamStandingRaw {
   rank: number;
   teamName: string;
   teamCode: string;
   wins: number;
   losses: number;
   draws: number;
-  gamesPlayed: number;
   winRate: string;
   gamesBehind: string;
-  streak?: string;
+  streak: string;
 }
 
 @Injectable()
@@ -20,7 +23,28 @@ export class ScraperService {
   private readonly CPBL_URL =
     'https://www.rebas.tw/season/CPBL-2025-JO/leaderboard?stats=team&section=standard';
 
-  async scrapeTeamStandings(): Promise<TeamStanding[]> {
+  constructor(
+    @InjectRepository(TeamStanding)
+    private teamStandingRepository: Repository<TeamStanding>,
+    @InjectRepository(TeamStandingsHistory)
+    private teamStandingsHistoryRepository: Repository<TeamStandingsHistory>,
+    @InjectRepository(Season)
+    private seasonRepository: Repository<Season>,
+  ) {}
+
+  @Cron('0 12 * * *') // 每天 12:00
+  async scrapeAndSaveTeamStandings(): Promise<void> {
+    console.log('🌐 Starting CPBL standings scrape at', new Date().toISOString());
+    try {
+      const standings = await this.scrapeTeamStandings();
+      await this.saveStandings(standings);
+      console.log('✅ CPBL standings saved successfully');
+    } catch (error) {
+      console.error('❌ Scrape failed:', error instanceof Error ? error.message : String(error));
+    }
+  }
+
+  async scrapeTeamStandings(): Promise<TeamStandingRaw[]> {
     let browser;
     try {
       browser = await puppeteer.launch({
@@ -34,7 +58,6 @@ export class ScraperService {
         timeout: 30000,
       });
 
-      // Wait for the standings table to load
       await page.waitForSelector('table', { timeout: 10000 });
 
       const htmlContent = await page.content();
@@ -48,9 +71,9 @@ export class ScraperService {
     }
   }
 
-  private parseTeamStandings(htmlContent: string): TeamStanding[] {
+  private parseTeamStandings(htmlContent: string): TeamStandingRaw[] {
     const $ = cheerio.load(htmlContent);
-    const standings: TeamStanding[] = [];
+    const standings: TeamStandingRaw[] = [];
 
     const rows = $('tbody tr');
 
@@ -78,7 +101,6 @@ export class ScraperService {
           wins,
           losses,
           draws,
-          gamesPlayed: parseInt(gamesPlayed) || wins + losses + draws,
           winRate,
           gamesBehind,
           streak,
@@ -90,15 +112,18 @@ export class ScraperService {
   }
 
   private extractTeamCode(teamName: string): string {
-    // Map traditional team names to codes
     const teamCodeMap: { [key: string]: string } = {
       中信兄弟: 'BRO',
-      樂天桃猿: 'ENG',
-      樂天銀河: 'ENG',
-      統一獅: 'LIO',
-      '統一7-ELEVEn獅': 'LIO',
-      富邦悍將: 'FAG',
-      臺鋼雄鷹: 'DMO',
+      樂天桃猿: 'RAK',
+      樂天: 'RAK',
+      統一獅: 'UNI',
+      統一: 'UNI',
+      富邦悍將: 'FUB',
+      富邦: 'FUB',
+      台鋼雄鷹: 'TSG',
+      雄鷹: 'TSG',
+      味全龍: 'WDR',
+      龍: 'WDR',
     };
 
     for (const [name, code] of Object.entries(teamCodeMap)) {
@@ -108,5 +133,70 @@ export class ScraperService {
     }
 
     return 'UNKNOWN';
+  }
+
+  private async saveStandings(standings: TeamStandingRaw[]): Promise<void> {
+    const season = await this.seasonRepository.findOne({
+      where: { code: 'CPBL-2025' },
+    });
+
+    if (!season) {
+      throw new Error('Season CPBL-2025 not found');
+    }
+
+    const now = new Date();
+    const recordedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    for (const standing of standings) {
+      // 轉換資料類型
+      const winRateNum = this.parseWinRate(standing.winRate);
+      const gamesBehindNum = this.parseGamesBehind(standing.gamesBehind);
+
+      // 更新或插入 team_standings (當前排名)
+      await this.teamStandingRepository.upsert(
+        {
+          season_id: season.id,
+          team_id: standing.teamCode,
+          rank: standing.rank,
+          wins: standing.wins,
+          losses: standing.losses,
+          draws: standing.draws,
+          winRate: winRateNum,
+          gamesBehind: gamesBehindNum,
+          streak: standing.streak,
+          scrapedAt: now,
+        },
+        {
+          conflictPaths: ['season_id', 'team_id'],
+          skipUpdateIfNoValuesChanged: true,
+        },
+      );
+
+      // 插入 team_standings_history (歷史記錄)
+      await this.teamStandingsHistoryRepository.save({
+        season_id: season.id,
+        team_id: standing.teamCode,
+        rank: standing.rank,
+        wins: standing.wins,
+        losses: standing.losses,
+        draws: standing.draws,
+        winRate: winRateNum,
+        gamesBehind: gamesBehindNum,
+        streak: standing.streak,
+        recorded_date: recordedDate,
+        scrapedAt: now,
+      });
+    }
+  }
+
+  private parseWinRate(winRateStr: string): number {
+    // "58.3%" → 0.583
+    const num = parseFloat(winRateStr.replace('%', ''));
+    return num / 100;
+  }
+
+  private parseGamesBehind(gamesBehindStr: string): number {
+    // ".0" → 0.0, "4.0" → 4.0
+    return parseFloat(gamesBehindStr) || 0;
   }
 }

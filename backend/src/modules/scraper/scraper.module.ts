@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScraperService } from './scraper.service';
 import { ScraperController } from './scraper.controller';
+import { TeamStanding, TeamStandingsHistory, Season } from '../../entities';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([TeamStanding, TeamStandingsHistory, Season])],
   providers: [ScraperService],
   controllers: [ScraperController],
   exports: [ScraperService],

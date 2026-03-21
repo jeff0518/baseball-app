@@ -1,5 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { BatterStats, PitcherStats, GameRecord } from '../entities';
+import { BatterStats, PitcherStats, GameRecord, Team, Season, TeamStanding, TeamStandingsHistory } from '../entities';
 
 export const typeormConfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -8,7 +8,7 @@ export const typeormConfig: TypeOrmModuleOptions = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'baseball_db',
-  entities: [BatterStats, PitcherStats, GameRecord],
-  synchronize: process.env.NODE_ENV !== 'production',
-  logging: process.env.NODE_ENV !== 'production',
+  entities: [BatterStats, PitcherStats, GameRecord, Team, Season, TeamStanding, TeamStandingsHistory],
+  synchronize: process.env.DB_SYNCHRONIZE === 'true',
+  logging: process.env.DB_LOGGING === 'true',
 };

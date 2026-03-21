@@ -7,12 +7,14 @@
     "dev": "ts-node -r tsconfig-paths/register src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
-    "start:prod": "node dist/main.js"
+    "start:prod": "node dist/main.js",
+    "seed": "ts-node -r tsconfig-paths/register src/seed.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@nestjs/schedule": "^4.1.2",
     "cheerio": "^1.2.0",
     "puppeteer": "^24.40.0"
   }
