@@ -150,7 +150,7 @@ export function PlayerDetailModal({ player, isOpen, onClose }: PlayerDetailModal
             width: '100%',
             marginTop: spacing.xl,
             padding: spacing.md,
-            backgroundColor: colors.secondary,
+            backgroundColor: colors.secondary.DEFAULT,
             color: colors.white,
             border: 'none',
             borderRadius: '6px',
@@ -159,8 +159,8 @@ export function PlayerDetailModal({ player, isOpen, onClose }: PlayerDetailModal
             cursor: 'pointer',
             transition: 'background-color 0.3s',
           }}
-          onMouseEnter={(e) => ((e.target as HTMLElement).style.backgroundColor = colors.primary)}
-          onMouseLeave={(e) => ((e.target as HTMLElement).style.backgroundColor = colors.secondary)}
+          onMouseEnter={(e) => ((e.target as HTMLElement).style.backgroundColor = colors.primary.DEFAULT)}
+          onMouseLeave={(e) => ((e.target as HTMLElement).style.backgroundColor = colors.secondary.DEFAULT)}
         >
           關閉
         </button>
@@ -190,13 +190,13 @@ function AdvancedStatDetail({ label, value }: { label: string; value: string }) 
         backgroundColor: colors.background,
         padding: spacing.md,
         borderRadius: '8px',
-        border: `2px solid ${colors.primary}`,
+        border: `2px solid ${colors.primary.DEFAULT}`,
       }}
     >
       <div style={{ fontSize: '0.875rem', color: colors.text.secondary, marginBottom: '0.5rem' }}>
         {label}
       </div>
-      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: colors.primary }}>
+      <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: colors.primary.DEFAULT }}>
         {value}
       </div>
     </div>

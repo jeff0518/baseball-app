@@ -16,7 +16,7 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
       onClick={onClick}
       style={{
         backgroundColor: colors.white,
-        border: `2px solid ${isPitcher ? '#004A9C33' : '#FCCF0033'}`,
+        border: `2px solid ${isPitcher ? colors.pitcher.light : colors.batter.light}`,
         borderRadius: '16px',
         padding: spacing.lg,
         cursor: onClick ? 'pointer' : 'default',
@@ -24,6 +24,14 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
         position: 'relative',
         overflow: 'hidden'
+      }}
+      tabIndex={onClick ? 0 : -1}
+      role={onClick ? 'button' : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          onClick();
+        }
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.boxShadow = '0 12px 24px rgba(0, 0, 0, 0.15)';
@@ -43,19 +51,19 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
         opacity: 0.05,
         fontStyle: 'italic',
         fontWeight: 'black',
-        color: isPitcher ? '#004A9C' : '#FCCF00'
+        color: isPitcher ? colors.pitcher.main : colors.batter.main
       }}>
         {isPitcher ? 'PITCHER' : 'BATTER'}
       </div>
 
       <div style={{ marginBottom: spacing.md, position: 'relative' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm }}>
-          <h3 style={{ margin: 0, fontSize: '1.4rem', color: colors.secondary, fontWeight: 'bold' }}>
+          <h3 style={{ margin: 0, fontSize: '1.4rem', color: colors.secondary.DEFAULT, fontWeight: 'bold' }}>
             {player.playerName}
           </h3>
           <span style={{ 
-            backgroundColor: isPitcher ? '#004A9C' : colors.primary,
-            color: isPitcher ? '#fff' : colors.secondary,
+            backgroundColor: isPitcher ? colors.pitcher.main : colors.batter.main,
+            color: isPitcher ? colors.white : colors.secondary.DEFAULT,
             padding: '4px 12px',
             borderRadius: '20px',
             fontSize: '0.9rem',
@@ -103,9 +111,9 @@ export function PlayerCard({ player, type = 'batter', onClick }: PlayerCardProps
           </>
         ) : (
           <>
-            <StatBoxSmall label="AVG" value={player.AVG?.toFixed(3) || '0.000'} color={colors.secondary} />
-            <StatBoxSmall label="OBP" value={player.OBP?.toFixed(3) || '0.000'} color={colors.secondary} />
-            <StatBoxSmall label="OPS" value={player.OPS?.toFixed(3) || '0.000'} color={colors.primary} />
+            <StatBoxSmall label="AVG" value={player.AVG?.toFixed(3) || '0.000'} color={colors.secondary.DEFAULT} />
+            <StatBoxSmall label="OBP" value={player.OBP?.toFixed(3) || '0.000'} color={colors.secondary.DEFAULT} />
+            <StatBoxSmall label="OPS" value={player.OPS?.toFixed(3) || '0.000'} color={colors.primary.DEFAULT} />
           </>
         )}
       </div>
@@ -117,7 +125,7 @@ function StatItem({ label, value }: { label: string; value: string | number }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <span style={{ color: '#888', fontSize: '0.85rem' }}>{label}</span>
-      <span style={{ color: colors.secondary, fontWeight: 'bold', fontSize: '1rem' }}>{value}</span>
+      <span style={{ color: colors.secondary.DEFAULT, fontWeight: 'bold', fontSize: '1rem' }}>{value}</span>
     </div>
   );
 }
@@ -134,7 +142,7 @@ function StatBoxSmall({ label, value, color }: { label: string; value: string; c
       <div style={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 'bold', marginBottom: '4px', letterSpacing: '1px' }}>
         {label}
       </div>
-      <div style={{ fontSize: '1.1rem', fontWeight: '900', color: color || colors.secondary }}>
+      <div style={{ fontSize: '1.1rem', fontWeight: '900', color: color || colors.secondary.DEFAULT }}>
         {value}
       </div>
     </div>

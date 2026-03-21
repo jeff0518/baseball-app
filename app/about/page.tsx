@@ -7,7 +7,7 @@ export default function AboutPage() {
     <main style={{ flex: 1, minHeight: 'calc(100vh - 60px)' }}>
       <section
         style={{
-          background: `linear-gradient(135deg, ${colors.secondary} 0%, #0f2850 100%)`,
+          background: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, #0f2850 100%)`,
           color: colors.white,
           padding: `${spacing['2xl']} ${spacing.xl}`,
           marginBottom: spacing['2xl'],
@@ -43,14 +43,14 @@ export default function AboutPage() {
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <h2 style={{ color: colors.secondary, marginTop: 0 }}>
+          <h2 style={{ color: colors.secondary.DEFAULT, marginTop: 0 }}>
             🏟️ 台灣棒球統計資料庫
           </h2>
           <p style={{ color: colors.text.secondary, lineHeight: '1.8' }}>
             歡迎來到台灣棒球統計資料庫！本網站致力於提供最完整、最準確的台灣職棒球員統計數據。
           </p>
 
-          <h3 style={{ color: colors.secondary }}>📊 我們提供什麼</h3>
+          <h3 style={{ color: colors.secondary.DEFAULT }}>📊 我們提供什麼</h3>
           <ul style={{ color: colors.text.secondary, lineHeight: '1.8' }}>
             <li>詳細的打者統計數據（打擊率、上壘率、長打率等）</li>
             <li>投手統計數據（防禦率、奪三振等）</li>
@@ -58,13 +58,13 @@ export default function AboutPage() {
             <li>比賽記錄數據</li>
           </ul>
 
-          <h3 style={{ color: colors.secondary }}>📝 資料來源</h3>
+          <h3 style={{ color: colors.secondary.DEFAULT }}>📝 資料來源</h3>
           <p style={{ color: colors.text.secondary }}>
             本網站的所有數據均來自{' '}
             <a
               href="https://www.rebas.tw/"
               style={{
-                color: colors.primary,
+                color: colors.primary.DEFAULT,
                 textDecoration: 'none',
                 fontWeight: 'bold',
               }}
@@ -74,7 +74,7 @@ export default function AboutPage() {
             ，每天定時自動更新。
           </p>
 
-          <h3 style={{ color: colors.secondary }}>💡 技術棧</h3>
+          <h3 style={{ color: colors.secondary.DEFAULT }}>💡 技術棧</h3>
           <p style={{ color: colors.text.secondary }}>
             <strong>前端：</strong> Next.js 16 + React 19 + TypeScript
             <br />
@@ -83,7 +83,7 @@ export default function AboutPage() {
             <strong>部署：</strong> Vercel
           </p>
 
-          <h3 style={{ color: colors.secondary }}>📧 聯絡方式</h3>
+          <h3 style={{ color: colors.secondary.DEFAULT }}>📧 聯絡方式</h3>
           <p style={{ color: colors.text.secondary }}>
             如有任何問題或建議，歡迎聯繫我們。
           </p>

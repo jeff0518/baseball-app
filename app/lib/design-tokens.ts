@@ -1,7 +1,13 @@
 // Baseball App Design System
 export const colors = {
-  primary: '#FCCF00',
-  secondary: '#0B1B3D',
+  primary: {
+    DEFAULT: '#FCCF00',
+    light: '#FFF9E0',
+  },
+  secondary: {
+    DEFAULT: '#0B1B3D',
+    light: '#0B1B3D33',
+  },
   success: '#10B981',
   warning: '#F59E0B',
   error: '#EF4444',
@@ -13,6 +19,16 @@ export const colors = {
   },
   border: '#E5E7EB',
   white: '#FFFFFF',
+  
+  // 投手/打者主题色
+  pitcher: {
+    main: '#004A9C',
+    light: '#004A9C33',
+  },
+  batter: {
+    main: '#FCCF00',
+    light: '#FCCF0033',
+  },
 };
 
 export const spacing = {
@@ -35,4 +51,11 @@ export const typography = {
     '3xl': '1.875rem',
     '4xl': '2.25rem',
   },
+};
+
+export const fontWeights = {
+  light: 300,
+  normal: 400,
+  bold: 700,
+  black: 900,
 };

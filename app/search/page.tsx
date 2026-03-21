@@ -90,7 +90,7 @@ export default function SearchPage() {
       {/* Header Section */}
       <section
         style={{
-          background: `linear-gradient(135deg, ${colors.secondary} 0%, #0f2850 100%)`,
+          background: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, #0f2850 100%)`,
           color: colors.white,
           padding: `${spacing['2xl']} ${spacing.xl}`,
           marginBottom: spacing['2xl'],
@@ -107,7 +107,7 @@ export default function SearchPage() {
           >
             球員搜尋
           </h1>
-          <p style={{ fontSize: '1rem', margin: 0, color: colors.primary }}>
+          <p style={{ fontSize: '1rem', margin: 0, color: colors.primary.DEFAULT }}>
             輸入球員名稱或背號進行搜尋
           </p>
         </div>
@@ -164,7 +164,7 @@ export default function SearchPage() {
                 transition: 'border-color 0.3s',
               }}
               onFocus={(e) => {
-                (e.target as HTMLInputElement).style.borderColor = colors.primary;
+                (e.target as HTMLInputElement).style.borderColor = colors.primary.DEFAULT;
               }}
               onBlur={(e) => {
                 (e.target as HTMLInputElement).style.borderColor = colors.border;
@@ -209,8 +209,8 @@ export default function SearchPage() {
             onClick={() => handleSearch(searchKeyword, 1)}
             disabled={loading}
             style={{
-              backgroundColor: colors.primary,
-              color: colors.secondary,
+              backgroundColor: colors.primary.DEFAULT,
+              color: colors.secondary.DEFAULT,
               border: 'none',
               padding: spacing.md,
               fontSize: '1rem',
@@ -312,10 +312,10 @@ export default function SearchPage() {
                     style={{
                       width: '40px',
                       height: '40px',
-                      border: page === currentPage ? `2px solid ${colors.primary}` : `2px solid ${colors.border}`,
+                      border: page === currentPage ? `2px solid ${colors.primary.DEFAULT}` : `2px solid ${colors.border}`,
                       borderRadius: '6px',
-                      backgroundColor: page === currentPage ? colors.primary : colors.white,
-                      color: page === currentPage ? colors.secondary : colors.text.primary,
+                      backgroundColor: page === currentPage ? colors.primary.DEFAULT : colors.white,
+                      color: page === currentPage ? colors.secondary.DEFAULT : colors.text.primary,
                       cursor: 'pointer',
                       fontWeight: 'bold',
                     }}

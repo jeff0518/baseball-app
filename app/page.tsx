@@ -71,7 +71,7 @@ function StreakBadge({ streak }: { streak: string }) {
   const match = streak.match(/\d+/);
   const count = match ? match[0] : '1';
   const displayLabel = isWin ? `W${count}` : `L${count}`;
-  const color = isWin ? '#e63946' : '#10B981';
+  const color = isWin ? colors.error : colors.success;
   
   return (
     <span style={{ 
@@ -168,7 +168,7 @@ export default function Home() {
               onError={() => setLogoError(true)} 
             />
           ) : (
-            <GiElephant size="6rem" color={colors.primary} />
+            <GiElephant size="6rem" color={colors.primary.DEFAULT} />
           )}
           {/* 背景光圈效果 */}
           <div style={{ 
@@ -176,7 +176,7 @@ export default function Home() {
             width: '100%', 
             height: '100%', 
             borderRadius: '50%', 
-            border: `2px solid ${colors.primary}`,
+            border: `2px solid ${colors.primary.DEFAULT}`,
             animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
             opacity: 0.5
           }} />
@@ -187,12 +187,12 @@ export default function Home() {
             <div style={{ 
               width: `${progress}%`, 
               height: '100%', 
-              backgroundColor: colors.primary, 
+              backgroundColor: colors.primary.DEFAULT, 
               transition: 'width 0.4s ease-out',
-              boxShadow: `0 0 10px ${colors.primary}`
+              boxShadow: `0 0 10px ${colors.primary.DEFAULT}`
             }} />
           </div>
-          <div style={{ color: colors.secondary, fontWeight: '900', fontSize: '1.1rem', letterSpacing: '4px', textTransform: 'uppercase' }}>
+          <div style={{ color: colors.secondary.DEFAULT, fontWeight: '900', fontSize: '1.1rem', letterSpacing: '4px', textTransform: 'uppercase' }}>
             戰情加載中 {progress}%
           </div>
         </div>
@@ -216,9 +216,9 @@ export default function Home() {
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '2rem', marginBottom: '2.5rem', alignItems: 'stretch' }}>
         
         <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `4px solid ${colors.primary}`, paddingBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <MdLeaderboard size="2rem" color={colors.secondary} /> 聯賽排名
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: `4px solid ${colors.primary.DEFAULT}`, paddingBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.6rem', color: colors.secondary.DEFAULT, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <MdLeaderboard size="2rem" color={colors.secondary.DEFAULT} /> 聯賽排名
             </h2>
             <div style={{ display: 'flex', gap: '0.4rem', backgroundColor: '#f0f0f0', padding: '5px', borderRadius: '15px' }}>
               {standingTabs.map((tab) => (
@@ -230,7 +230,7 @@ export default function Home() {
                     borderRadius: '10px',
                     border: 'none',
                     backgroundColor: standingPeriod === tab.id ? colors.white : 'transparent',
-                    color: colors.secondary,
+                    color: colors.secondary.DEFAULT,
                     boxShadow: standingPeriod === tab.id ? '0 4px 8px rgba(0,0,0,0.1)' : 'none',
                     cursor: 'pointer',
                     fontWeight: 'bold',
@@ -263,9 +263,9 @@ export default function Home() {
                     key={team.team} 
                     style={{ 
                       background: isBrothers 
-                        ? 'linear-gradient(90deg, #FCCF00 0%, #FFF9E0 100%)' 
-                        : '#fff',
-                      boxShadow: isBrothers ? '0 8px 20px rgba(252, 207, 0, 0.3)' : '0 2px 4px rgba(0,0,0,0.02)',
+                        ? `linear-gradient(90deg, ${colors.primary.DEFAULT} 0%, ${colors.primary.light} 100%)` 
+                        : colors.white,
+                      boxShadow: isBrothers ? `0 8px 20px ${colors.primary.DEFAULT}4d` : '0 2px 4px rgba(0,0,0,0.02)',
                       transform: isBrothers ? 'scale(1.02)' : 'scale(1)',
                       zIndex: isBrothers ? 2 : 1,
                       position: 'relative',
@@ -274,7 +274,7 @@ export default function Home() {
                   >
                     <td style={{ padding: '0.8rem', textAlign: 'center', borderRadius: '15px 0 0 15px' }}>
                       <span style={{ 
-                        color: isBrothers ? colors.secondary : '#bbb', 
+                        color: isBrothers ? colors.secondary.DEFAULT : '#bbb', 
                         fontSize: isBrothers ? '1.4rem' : '1.1rem',
                         fontWeight: '900'
                       }}>
@@ -284,13 +284,13 @@ export default function Home() {
                     <td style={{ padding: '0.8rem', textAlign: 'center' }}>
                       <TeamBadge team={team.team} showLabel={false} />
                     </td>
-                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary }}>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary.DEFAULT }}>
                       {team.won}-{team.lost}-{team.drawn}
                     </td>
-                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: 'bold', color: colors.secondary }}>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: 'bold', color: colors.secondary.DEFAULT }}>
                       {team.winRate.toFixed(3)}
                     </td>
-                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary }}>
+                    <td style={{ padding: '0.8rem', textAlign: 'center', fontWeight: isBrothers ? 'bold' : 'normal', color: colors.secondary.DEFAULT }}>
                       {team.gamesBehind}
                     </td>
                     <td style={{ padding: '0.8rem', textAlign: 'center', borderRadius: '0 15px 15px 0' }}>
@@ -303,8 +303,8 @@ export default function Home() {
           </table>
         </section>
 
-        <section style={{ backgroundColor: colors.secondary, borderRadius: '24px', padding: '2rem', color: colors.white, boxShadow: '0 15px 50px rgba(11,27,61,0.25)', display: 'flex', flexDirection: 'column' }}>
-          <h2 style={{ fontSize: '1.6rem', color: colors.primary, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+        <section style={{ backgroundColor: colors.secondary.DEFAULT, borderRadius: '24px', padding: '2rem', color: colors.white, boxShadow: '0 15px 50px rgba(11,27,61,0.25)', display: 'flex', flexDirection: 'column' }}>
+          <h2 style={{ fontSize: '1.6rem', color: colors.primary.DEFAULT, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
             <MdCalendarMonth size="2rem" /> 近期賽程
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
@@ -313,7 +313,7 @@ export default function Home() {
               const opponentInfo = getTeamInfo(game.opponent);
               return (
                 <div key={game.id} style={{ 
-                  background: `linear-gradient(135deg, ${colors.secondary} 0%, ${opponentInfo.primaryColor}33 100%)`, 
+                  background: `linear-gradient(135deg, ${colors.secondary.DEFAULT} 0%, ${opponentInfo.primaryColor}33 100%)`, 
                   borderRadius: '20px', 
                   padding: '1.2rem', 
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -332,10 +332,10 @@ export default function Home() {
                   )}
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', position: 'relative', zIndex: 1 }}>
-                    <div style={{ fontSize: '1rem', color: colors.primary, fontWeight: '900' }}>
+                    <div style={{ fontSize: '1rem', color: colors.primary.DEFAULT, fontWeight: '900' }}>
                       {game.date} · <span style={{ opacity: 0.8 }}>{game.time}</span>
                     </div>
-                    <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', padding: '3px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: colors.primary, fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ backgroundColor: 'rgba(255,255,255,0.15)', padding: '3px 10px', borderRadius: '15px', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', color: colors.primary.DEFAULT, fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.05)' }}>
                       <MdLocationOn size="1rem" /> {game.location}
                     </div>
                   </div>
@@ -354,8 +354,8 @@ export default function Home() {
 
       <section style={{ backgroundColor: colors.white, borderRadius: '24px', padding: '2rem', boxShadow: '0 10px 40px rgba(0,0,0,0.06)', marginBottom: '3rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.6rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <FaFire size="2rem" color="#e63946" /> 戰將數據
+          <h2 style={{ fontSize: '1.6rem', color: colors.secondary.DEFAULT, margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <FaFire size="2rem" color={colors.error} /> 戰將數據
           </h2>
           <div style={{ display: 'flex', backgroundColor: '#f0f0f0', borderRadius: '15px', padding: '5px' }}>
             <button
@@ -364,8 +364,8 @@ export default function Home() {
                 padding: '0.8rem 2.5rem',
                 borderRadius: '12px',
                 border: 'none',
-                backgroundColor: playerType === 'batter' ? colors.secondary : 'transparent',
-                color: playerType === 'batter' ? colors.primary : '#666',
+                backgroundColor: playerType === 'batter' ? colors.secondary.DEFAULT : 'transparent',
+                color: playerType === 'batter' ? colors.primary.DEFAULT : '#666',
                 cursor: 'pointer',
                 fontWeight: 'bold',
                 fontSize: '1rem',
@@ -380,8 +380,8 @@ export default function Home() {
                 padding: '0.8rem 2.5rem',
                 borderRadius: '12px',
                 border: 'none',
-                backgroundColor: playerType === 'pitcher' ? colors.secondary : 'transparent',
-                color: playerType === 'pitcher' ? colors.primary : '#666',
+                backgroundColor: playerType === 'pitcher' ? colors.secondary.DEFAULT : 'transparent',
+                color: playerType === 'pitcher' ? colors.primary.DEFAULT : '#666',
                 cursor: 'pointer',
                 fontWeight: 'bold',
                 fontSize: '1rem',
@@ -402,10 +402,10 @@ export default function Home() {
 
       <section style={{ paddingBottom: '4rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-          <span style={{ color: colors.primary, fontWeight: 'bold', fontSize: '1rem', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span style={{ color: colors.primary.DEFAULT, fontWeight: 'bold', fontSize: '1rem', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FaYoutube color="#ff0000" /> Video
           </span>
-          <h2 style={{ fontSize: '1.8rem', color: colors.secondary, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.8rem', color: colors.secondary.DEFAULT, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             【爪嗨賴】▸ 全部播放 <MdVideoLibrary size="1.5rem" />
           </h2>
         </div>
@@ -422,7 +422,7 @@ export default function Home() {
               onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
             >
               <div style={{ 
-                backgroundColor: colors.primary, 
+                backgroundColor: colors.primary.DEFAULT, 
                 borderRadius: '12px', 
                 overflow: 'hidden', 
                 boxShadow: '0 4px 15px rgba(0,0,0,0.1)' 
@@ -455,7 +455,7 @@ export default function Home() {
                   padding: '1rem', 
                   height: '80px', 
                   fontSize: '0.9rem', 
-                  color: colors.secondary, 
+                  color: colors.secondary.DEFAULT, 
                   fontWeight: 'bold',
                   overflow: 'hidden',
                   display: '-webkit-box',
